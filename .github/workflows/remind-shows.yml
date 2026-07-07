@@ -1,0 +1,32 @@
+name: Remind upcoming shows
+
+# Time-driven counterpart to announce-shows.yml. Runs once a day and emails a
+# reminder for any show landing within the next 7 days. Each show is reminded
+# exactly once (dedup by broadcast name in the script).
+on:
+  schedule:
+    # 16:00 UTC ≈ 9am Pacific — a reasonable hour for the send to go out.
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Render reminders without sending'
+        type: boolean
+        default: true
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Send reminders for shows landing this week
+        run: node scripts/remind-shows.mjs
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_AUDIENCE_ID: ${{ secrets.RESEND_AUDIENCE_ID }}
+          DRY_RUN: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '1' || '' }}

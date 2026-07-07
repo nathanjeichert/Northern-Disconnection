@@ -4,29 +4,20 @@
   },
   "upcomingShows": [
     {
-      "date": "June 20th, 2026",
-      "time": "8:00 PM",
-      "venue": "The Forestville Club",
-      "location": "Forestville, CA",
-      "description": "",
-      "hasTickets": false,
-      "soldOut": false
-    },
-    {
-      "date": "June 26th, 2026",
-      "time": "6:00–8:00 PM",
-      "venue": "Aqus Cafe",
-      "location": "Petaluma, CA",
-      "description": "with special guest Mark Benanti",
-      "hasTickets": false,
-      "soldOut": false
-    },
-    {
       "date": "August 23rd, 2026",
       "time": "",
       "venue": "McKay's Taphouse & Beer Garden",
       "location": "Pleasanton, CA",
       "description": "NorCal Epilepsy Foundation Fundraiser",
+      "hasTickets": false,
+      "soldOut": false
+    },
+    {
+      "date": "September 12th, 2026",
+      "time": "8:00 PM",
+      "venue": "The Forestville Club",
+      "location": "Forestville, CA",
+      "description": "",
       "hasTickets": false,
       "soldOut": false
     },

@@ -11,11 +11,23 @@ it needs nothing from you; the reference below is for if something ever breaks.
   like it exists anymore — Resend's free tier has no inactivity expiration.
 - **Signups**: the site form POSTs to `/api/subscribe`, which adds the contact to
   the Resend audience. Re-subscribing after an unsubscribe re-opts the contact in.
-- **Alerts**: a GitHub Action (`.github/workflows/announce-shows.yml`) runs on every
-  push that touches `content/shows.json`. It diffs the file against the previous
-  commit and, only when genuinely **new, upcoming** shows were added, sends **one
-  digest email** via a Resend Broadcast. Edits to existing shows (times, typos,
+  A one-time **welcome email** goes out when a brand-new contact is created (best
+  effort — a welcome-send failure never fails the signup). The endpoint is protected
+  by a hidden **honeypot** field (`company`) and a best-effort in-memory **rate limit**
+  (5 requests / 10 min per IP). The honeypot is the real defense; the rate limit only
+  throttles bursts on a single warm serverless instance (no shared store by design).
+- **Alerts** (new-show announcements): a GitHub Action (`.github/workflows/announce-shows.yml`)
+  runs on every push that touches `content/shows.json`. It diffs the file against the
+  previous commit and, only when genuinely **new, upcoming** shows were added, sends
+  **one digest email** via a Resend Broadcast. Edits to existing shows (times, typos,
   descriptions) never email anyone. Past-dated shows never email anyone.
+- **Reminders** (week-of the show): a second GitHub Action
+  (`.github/workflows/remind-shows.yml`) runs **daily on a cron** (16:00 UTC ≈ 9am PT).
+  It reads the current `content/shows.json` and emails a reminder for any show landing
+  within the next **7 days** (`REMINDER_DAYS`). Each show is reminded **exactly once** —
+  the script names each reminder broadcast deterministically (`Reminder | <date> | <venue>`)
+  and skips any show that already has one, so the daily run never double-sends. Both
+  Actions share `scripts/newsletter-lib.mjs` (email chrome, footer, Resend helpers).
 - **Unsubscribes**: every email carries Resend's one-click unsubscribe link.
   Resend suppresses unsubscribed contacts from future broadcasts automatically.
   Nothing to manage.

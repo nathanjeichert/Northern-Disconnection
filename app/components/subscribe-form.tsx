@@ -13,6 +13,7 @@ interface SubscribeFormProps {
 // Compact one-line signup strip: label + email input + button.
 export default function SubscribeForm({ className = '' }: SubscribeFormProps) {
   const [email, setEmail] = useState('')
+  const [hp, setHp] = useState('')
   const [status, setStatus] = useState<Status>('idle')
   const [message, setMessage] = useState('')
 
@@ -25,7 +26,7 @@ export default function SubscribeForm({ className = '' }: SubscribeFormProps) {
       const response = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, hp }),
       })
 
       if (response.ok) {
@@ -53,6 +54,17 @@ export default function SubscribeForm({ className = '' }: SubscribeFormProps) {
           <Mail size={18} className="shrink-0 text-rust" aria-hidden="true" />
           Get Show Alerts
         </span>
+        {/* Honeypot: hidden from humans, catches bots that fill every field. */}
+        <input
+          type="text"
+          name="company"
+          value={hp}
+          onChange={(e) => setHp(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }}
+        />
         <input
           type="email"
           value={email}
