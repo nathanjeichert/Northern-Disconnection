@@ -25,7 +25,11 @@ export const MAILING_LOCATION = 'Sonoma County, CA'
 // 3. Outlook.com/365 tags force-recolored elements with data-ogsc/data-ogsb —
 //    the same DARK palette is re-asserted there.
 const LIGHT = {
-  canvas: '#efe6cf', // parchment
+  // Canvas hue is deliberately in the pine-green family: Gmail's forced dark
+  // mode keeps a color's hue and inverts its lightness, so this pale sage
+  // becomes a deep pine (#17261d-ish) instead of the olive-brown that a warm
+  // parchment hue turns into.
+  canvas: '#d9e8df', // pale sage
   card: '#f7f2e5', // cream
   ink: '#0c2318', // pine — headings & body
   date: '#1d4030', // moss — show date lines

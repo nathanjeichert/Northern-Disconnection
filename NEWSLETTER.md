@@ -55,10 +55,13 @@ can target Gmail's dark mode, so the emails are built to *survive* it instead:
   recolors images, so the pine/cream/gold banner is pixel-identical in every
   client and mode. Regenerate after logo or palette changes with
   `node scripts/make-email-masthead.mjs`.
-- **The HTML palette inverts gracefully**: light parchment/cream surfaces, no
-  large dark fills, and midtone accents (gold, burgundy, gray-greens) that
-  shift little under inversion. Gmail's dark mode then produces a coherent
-  "night handbill" that matches the untouched dark masthead.
+- **The HTML palette inverts gracefully**: light surfaces, no large dark
+  fills, and midtone accents (gold, burgundy, gray-greens) that shift little
+  under inversion. Gmail keeps each color's *hue* and inverts its *lightness*,
+  so the canvas is a pale sage in the pine-hue family — it inverts to a deep
+  pine green rather than the olive-brown a warm parchment hue turns into.
+  Gmail's dark mode then produces a coherent "night handbill" that matches
+  the untouched dark masthead.
 - **Clients with real hooks get the branded dark theme** (the `DARK` palette
   in `newsletter-lib.mjs`): Apple Mail via `@media (prefers-color-scheme:
   dark)`, Outlook.com/365 via `[data-ogsc]`/`[data-ogsb]` overrides.

@@ -54,10 +54,8 @@ function daysUntil(show) {
 const reminderName = (show) => `Reminder | ${showKey(show)}`
 
 function buildEmail(show, days) {
-  const when =
-    days <= 0 ? 'today' : days === 1 ? 'tomorrow' : days <= 7 ? 'this week' : 'soon'
-  const introText = `We're playing ${when} — hope to see you there:`
-  const introHtml = `We&rsquo;re playing ${when} &mdash; hope to see you there:`
+  const introText = `We've got a show soon, hope to see you there!`
+  const introHtml = `We&rsquo;ve got a show soon, hope to see you there!`
   const subject =
     days <= 1
       ? `Tonight-ish: Northern Disconnection at ${show.venue}`
