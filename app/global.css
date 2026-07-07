@@ -8,7 +8,6 @@
 
 :root {
   --pine: #0c2318; /* page base */
-  --midnight: #0c2318;
   --forest: #355e3b;
   --moss: #1d4030;
   --cream: #f7f2e5;
@@ -110,7 +109,6 @@ body {
 .text-pine { color: var(--pine); }
 
 .bg-pine { background-color: var(--pine); }
-.bg-midnight { background-color: var(--pine); }
 .bg-moss { background-color: var(--moss); }
 .bg-forest { background-color: var(--forest); }
 .bg-cream { background-color: var(--cream); }
@@ -276,8 +274,4 @@ input[type='email'] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-}
-
-.title {
-  text-wrap: balance;
 }
