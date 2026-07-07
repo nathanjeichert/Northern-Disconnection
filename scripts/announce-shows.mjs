@@ -50,11 +50,11 @@ function loadShows(ref, fileOverride) {
 function buildEmail(newShows) {
   const plural = newShows.length > 1
   const introText = plural
-    ? `We've added ${newShows.length} new shows — hope to see you out there:`
-    : `We've added a new show — hope to see you out there:`
+    ? `We've added ${newShows.length} new shows, hope to see you there!`
+    : `We've added a new show, hope to see you there!`
   const introHtml = plural
-    ? `We&rsquo;ve added ${newShows.length} new shows &mdash; hope to see you out there:`
-    : `We&rsquo;ve added a new show &mdash; hope to see you out there:`
+    ? `We&rsquo;ve added ${newShows.length} new shows, hope to see you there!`
+    : `We&rsquo;ve added a new show, hope to see you there!`
   const subject = plural
     ? `${newShows.length} new Northern Disconnection shows announced`
     : `New show: ${newShows[0].venue}, ${newShows[0].location} — ${newShows[0].date}`

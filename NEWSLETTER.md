@@ -38,6 +38,33 @@ redeploys the site from the same push.
 
 Free-tier limits (plenty for now): 3,000 emails/month, 100/day, 1,000 contacts.
 
+## Email design & dark mode
+
+All three emails (welcome, alert, reminder) render through one shared chrome —
+`renderChrome()` in `scripts/newsletter-lib.mjs`: masthead image, eyebrow,
+bordered card with the poster shadow, fine-print footer. The welcome email in
+`/api/subscribe` uses `renderWelcomeEmail()` from the same file.
+
+Dark mode was the hard part. Gmail's mobile apps (worst on iOS) force-invert
+every CSS color with **no opt-out**: they ignore `color-scheme` meta tags,
+strip `prefers-color-scheme` media queries, never set Outlook's `data-ogsc`
+attributes, and will even invert an already-dark design back to light. Nothing
+can target Gmail's dark mode, so the emails are built to *survive* it instead:
+
+- **The header is an image** (`public/email-masthead.png`). Gmail never
+  recolors images, so the pine/cream/gold banner is pixel-identical in every
+  client and mode. Regenerate after logo or palette changes with
+  `node scripts/make-email-masthead.mjs`.
+- **The HTML palette inverts gracefully**: light parchment/cream surfaces, no
+  large dark fills, and midtone accents (gold, burgundy, gray-greens) that
+  shift little under inversion. Gmail's dark mode then produces a coherent
+  "night handbill" that matches the untouched dark masthead.
+- **Clients with real hooks get the branded dark theme** (the `DARK` palette
+  in `newsletter-lib.mjs`): Apple Mail via `@media (prefers-color-scheme:
+  dark)`, Outlook.com/365 via `[data-ogsc]`/`[data-ogsb]` overrides.
+- The card's offset "poster shadow" is a gold-background wrapper `<td>` with
+  right/bottom padding — `box-shadow` doesn't render in Gmail.
+
 ## How it was set up (already done — for reference)
 
 1. **Resend account**: signed in with Google as nathanjeichert@gmail.com.
