@@ -6,7 +6,8 @@ The official website for Northern Disconnection, a psychedelic americana band fr
 - Upcoming shows calendar with automatic "next show" highlighting
 - Latest YouTube video, pulled automatically
 - "Live at G-Fest 2025" full-show stream from the Internet Archive
-- Newsletter signup (Redis-backed)
+- Newsletter with automatic show announcements and week-of reminders (Resend + GitHub Actions)
+- schema.org structured data (MusicGroup + MusicEvent) generated from the shows file
 - Vintage-handbill design system: Fraunces & Alegreya Sans type, deep pine palette, film grain
 
 ## Development

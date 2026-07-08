@@ -1,9 +1,18 @@
 import { Youtube } from 'lucide-react'
 import Ornament from '@/app/components/ornament'
 
-export const metadata = {
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
   title: 'Music',
   description: 'Live at G-Fest 2025 — stream the full show from the Internet Archive.',
+  alternates: { canonical: '/music' },
+  openGraph: {
+    title: 'Music | Northern Disconnection',
+    description: 'Live at G-Fest 2025 — stream the full show from the Internet Archive.',
+    url: '/music',
+    images: ['/band-photos/gfest-live.jpg'],
+  },
 }
 
 export default function MusicPage() {

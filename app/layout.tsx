@@ -7,6 +7,7 @@ import MotionProvider from './components/motion-provider'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { baseUrl } from './sitemap'
+import { musicGroupJsonLd } from '@/lib/structured-data'
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -70,6 +71,10 @@ export default function RootLayout({
       className={`${fraunces.variable} ${alegreyaSans.variable}`}
     >
       <body className="antialiased min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(musicGroupJsonLd) }}
+        />
         <div className="grain-overlay"></div>
         <div className="watermark-overlay" aria-hidden="true"></div>
         <main className="relative z-10">

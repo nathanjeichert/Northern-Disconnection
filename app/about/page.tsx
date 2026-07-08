@@ -23,6 +23,13 @@ const aboutSections = [
 export const metadata: Metadata = {
   title: 'About',
   description: 'Learn the story of Northern Disconnection and the longtime friends behind the band.',
+  alternates: { canonical: '/about' },
+  openGraph: {
+    title: 'About | Northern Disconnection',
+    description: 'Learn the story of Northern Disconnection and the longtime friends behind the band.',
+    url: '/about',
+    images: ['/band-photos/BrickPhoto.jpg'],
+  },
 }
 
 export default function AboutPage() {
