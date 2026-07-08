@@ -4,7 +4,7 @@ import { Fraunces, Alegreya_Sans } from 'next/font/google'
 import { Navbar } from './components/nav'
 import Footer from './components/footer'
 import MotionProvider from './components/motion-provider'
-import { Analytics } from '@vercel/analytics/react'
+import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { baseUrl } from './sitemap'
 
