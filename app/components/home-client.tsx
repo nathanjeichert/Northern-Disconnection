@@ -9,6 +9,7 @@ import type { Show } from '@/types/content'
 import { getWeekday } from '@/lib/dates'
 import SubscribeForm from './subscribe-form'
 import Ornament from './ornament'
+import HeroAtmosphereMount from './hero-atmosphere-mount'
 
 type LatestVideo = {
   videoId: string
@@ -108,6 +109,9 @@ export default function HomeClient({ nextShow }: HomeClientProps) {
         <div className="absolute inset-0 bg-[#0c2318]/15" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0c2318]/40 via-transparent to-[#0c2318]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_40%,_rgba(12,35,24,0.35)_100%)]" />
+
+        {/* the forest leans into the frame: edge redwoods, fog, fireflies */}
+        <HeroAtmosphereMount />
 
         {/*
           Spacer that tracks the band's faces across aspect ratios. The photo
