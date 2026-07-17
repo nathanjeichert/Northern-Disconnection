@@ -24,9 +24,6 @@ export default function MusicPage() {
         <header className="mb-12 text-center">
           <h1 className="font-display vintage-shadow text-5xl text-cream sm:text-6xl">Live at G-Fest 2025</h1>
           <p className="mt-4 text-sand/80">September 27, 2025 · Petaluma, CA</p>
-          <p className="mx-auto mt-3 max-w-md text-sm italic text-sand/60">
-            The stump keeps time: bass moves the heartwood, cymbals shimmer the sapwood.
-          </p>
           <Ornament className="mt-6" />
         </header>
 

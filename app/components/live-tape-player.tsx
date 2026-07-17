@@ -130,7 +130,7 @@ export default function LiveTapePlayer({ identifier, fallbackTitle = 'Live tape'
       const ctx = new Ctx()
       const analyser = ctx.createAnalyser()
       analyser.fftSize = 2048
-      analyser.smoothingTimeConstant = 0.8
+      analyser.smoothingTimeConstant = 0.75
       analyser.connect(ctx.destination)
       ctxRef.current = ctx
       analyserRef.current = analyser
@@ -330,7 +330,7 @@ export default function LiveTapePlayer({ identifier, fallbackTitle = 'Live tape'
       ? 'tape rolling · visualizer resting (stream data unavailable)'
       : playing
         ? 'streaming from the internet archive'
-        : 'soundboard · one ring per song'
+        : ' '
 
   if (loadState === 'error') {
     return (

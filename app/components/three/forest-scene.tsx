@@ -4,7 +4,7 @@ import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useReducedMotion } from 'framer-motion'
-import { makeGlowTexture, makeRayTexture, makeRidgeTexture, makeTreeTexture, makeWispTexture, mulberry32, SCENE_BG } from './textures'
+import { makeBlurredTreeTexture, makeGlowTexture, makeRayTexture, makeRidgeTexture, makeTreeTexture, makeWispTexture, mulberry32, SCENE_BG } from './textures'
 
 /*
   The sitewide backdrop: a real 3D redwood grove replacing the flat
@@ -70,6 +70,47 @@ function Trees({ compact }: SceneConfig) {
   )
 }
 
+// Out-of-focus giants just in front of the camera plane: at this depth the
+// pointer/scroll parallax throws them far across the frame, which is the
+// strongest "this is really 3D" cue in the scene.
+function NearBokeh({ compact }: SceneConfig) {
+  const textures = useMemo(() => [makeBlurredTreeTexture(1), makeBlurredTreeTexture(2)], [])
+  if (compact) return null
+  return (
+    <group>
+      <mesh position={[-7.8, 1.2, -1.4]} scale={[7, 17, 1]}>
+        <planeGeometry />
+        <meshBasicMaterial map={textures[0]} transparent depthWrite={false} opacity={0.88} fog={false} color="#030c07" />
+      </mesh>
+      <mesh position={[8.4, 0.4, -1.8]} scale={[-6.4, 15.5, 1]}>
+        <planeGeometry />
+        <meshBasicMaterial map={textures[1]} transparent depthWrite={false} opacity={0.85} fog={false} color="#030c07" />
+      </mesh>
+    </group>
+  )
+}
+
+// Broad translucent mist sheets slotted between the tree rows; parallax
+// slides the rows against them, so the depth layering stays legible.
+function MistSheets() {
+  const tex = useMemo(() => makeWispTexture(), [])
+  const sheets = [
+    { z: -6, y: -1.2, w: 34, opacity: 0.055 },
+    { z: -10.5, y: -0.6, w: 44, opacity: 0.075 },
+    { z: -16, y: 0.2, w: 60, opacity: 0.095 },
+  ]
+  return (
+    <group>
+      {sheets.map((s, i) => (
+        <mesh key={i} position={[0, s.y, s.z]}>
+          <planeGeometry args={[s.w, s.w * 0.22]} />
+          <meshBasicMaterial map={tex} transparent opacity={s.opacity} depthWrite={false} fog={false} />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
 function FarRidge() {
   const tex = useMemo(() => makeRidgeTexture(1), [])
   return (
@@ -112,17 +153,20 @@ function Rays() {
     { x: 6.0, w: 1.7, tilt: -0.28, base: 0.085, speed: 0.33 },
     { x: 2.2, w: 3.4, tilt: -0.4, base: 0.07, speed: 0.15 },
   ]
+  const meshes = useRef<(THREE.Mesh | null)[]>([])
   useFrame((state) => {
     const t = state.clock.elapsedTime
     rays.forEach((r, i) => {
       const m = mats.current[i]
       if (m) m.opacity = (r.base + 0.035 * (0.5 + 0.5 * Math.sin(t * r.speed + i * 2.1))) * (1 - scrollState.p * 0.75)
+      const mesh = meshes.current[i]
+      if (mesh) mesh.rotation.z = r.tilt + Math.sin(t * 0.07 + i * 1.7) * 0.025
     })
   })
   return (
     <group position={[0, 1.5, -20]}>
       {rays.map((r, i) => (
-        <mesh key={i} position={[r.x, 0, 0]} rotation-z={r.tilt}>
+        <mesh key={i} ref={(m) => { meshes.current[i] = m }} position={[r.x, 0, 0]} rotation-z={r.tilt}>
           <planeGeometry args={[r.w, 22]} />
           <meshBasicMaterial
             ref={(m) => { mats.current[i] = m }}
@@ -213,7 +257,7 @@ function Motes({ compact }: SceneConfig) {
       positions[i * 3 + 1] = -2.2 + rng() * 6
       positions[i * 3 + 2] = -3 - rng() * 26
       phases[i] = rng() * Math.PI * 2
-      sizes[i] = 0.5 + rng() * 1.3
+      sizes[i] = 0.7 + rng() * 1.7
     }
     return { positions, phases, sizes }
   }, [count])
@@ -248,10 +292,13 @@ function CameraRig({ animate }: { animate: boolean }) {
     const target = Math.min(1, window.scrollY / max)
     scrollState.p += (target - scrollState.p) * 0.06
     const p = scrollState.p
-    camera.position.x += (state.pointer.x * 0.7 - camera.position.x) * 0.03
-    camera.position.y += (0.5 - p * 2.1 + state.pointer.y * 0.3 - camera.position.y) * 0.05
-    camera.lookAt(0, 0.1 - p * 1.5, -14)
-    if (scene.fog instanceof THREE.FogExp2) scene.fog.density = 0.032 + p * 0.018
+    const t = state.clock.elapsedTime
+    // idle drift keeps the parallax visible even before the pointer moves
+    const driftX = Math.sin(t * 0.05) * 0.4
+    camera.position.x += (state.pointer.x * 1.6 + driftX - camera.position.x) * 0.03
+    camera.position.y += (0.5 - p * 3.0 + state.pointer.y * 0.5 - camera.position.y) * 0.05
+    camera.lookAt(camera.position.x * 0.35, 0.1 - p * 1.9, -14)
+    if (scene.fog instanceof THREE.FogExp2) scene.fog.density = 0.032 + p * 0.02
   })
   return null
 }
@@ -276,6 +323,8 @@ export default function ForestScene() {
       <fogExp2 attach="fog" args={[SCENE_BG, 0.032]} />
       <FarRidge />
       <Trees compact={compact} />
+      <MistSheets />
+      <NearBokeh compact={compact} />
       <Ground />
       <Moon />
       <Rays />

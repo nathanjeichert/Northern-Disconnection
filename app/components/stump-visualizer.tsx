@@ -63,7 +63,7 @@ float fbm(vec2 p) {
 
 void main() {
   vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / (0.5 * min(u_res.x, u_res.y));
-  p *= 1.0 + 0.02 * u_level;                 // whole stump breathes with loudness
+  p *= 1.0 + 0.035 * u_level;                // whole stump breathes with loudness
 
   float rot = u_t * 0.018;
   p = mat2(cos(rot), -sin(rot), sin(rot), cos(rot)) * p;
@@ -83,14 +83,20 @@ void main() {
   // audio: each radius samples its own frequency band (bass inner)
   float amp = texture2D(u_bins, vec2(clamp(rn, 0.0, 1.0) * 0.92 + 0.02, 0.5)).r;
 
-  // growth rings: warped, with per-ring width variation (fat years, lean years)
+  // growth rings: warped, with per-ring width variation (fat years, lean
+  // years). Audio displaces the ring field two ways: a radial swell, and
+  // an angular ripple that gets finer and faster toward the rim — kick
+  // drums heave the heartwood, cymbals sizzle the sapwood edge.
   float ringWarp = 1.5 * fbm(pc * 2.6) + 0.55 * fbm(pc * 7.5);
-  float rc = rn * 60.0 + ringWarp * 3.2 + amp * 0.5 * sin(ang * 3.0 + u_t * 1.4);
+  float kick = pow(amp, 1.5);                // transient-gated, so motion reads as hits
+  float ripple = kick * (0.25 + rn * 1.9) * sin(ang * (3.0 + rn * 10.0) + u_t * (1.5 + rn * 3.0));
+  float rc = (rn * (1.0 - kick * 0.03)) * 60.0 + ringWarp * 3.2 + ripple;
   float ringIdx = floor(rc);
   float f = fract(rc);
   float widthVar = 0.45 + 0.42 * hash(vec2(ringIdx, 7.0));
-  float late = smoothstep(widthVar, widthVar + 0.18, f) * (0.5 + 0.5 * hash(vec2(ringIdx, 13.0)));
-  late *= 0.7 + amp * 1.6;                   // rings glow with their band
+  // loud bands carve wider, brighter latewood lines
+  float late = smoothstep(widthVar - amp * 0.22, widthVar + 0.18, f) * (0.5 + 0.5 * hash(vec2(ringIdx, 13.0)));
+  late *= 0.65 + amp * 2.1;                  // rings glow with their band
 
   // wood: deep red heartwood grading out to pale sapwood
   vec3 heartDeep = vec3(0.40, 0.185, 0.115);
@@ -102,7 +108,7 @@ void main() {
   wood = mix(wood, sap, smoothstep(0.78, 0.92, rn));
 
   wood *= 1.0 - late * 0.42;
-  wood += vec3(0.91, 0.72, 0.29) * late * amp * 0.38;   // marigold sheen on live rings
+  wood += vec3(0.91, 0.72, 0.29) * late * pow(amp, 1.8) * 0.5;   // marigold flash on hot rings
 
   // radial fiber + fine mottle
   wood *= 0.94 + 0.10 * noise(vec2(ang * 34.0, rn * 5.0));
@@ -222,17 +228,23 @@ export default function StumpVisualizer({ analyserRef, playing, synthetic = fals
       const live = playingRef.current && analyser && !syntheticRef.current
       if (live) {
         analyser.getByteFrequencyData(raw)
-        const usable = Math.min(raw.length, Math.floor(analyser.frequencyBinCount * 0.7))
+        // Map the stump to ~40 Hz–8 kHz only: real music carries almost no
+        // energy above that, and spreading rings across dead spectrum left
+        // the outer third motionless. Cubic spacing gives lows the
+        // heartwood; the rim lands where cymbals and pick attack live.
+        const usable = Math.min(raw.length, Math.floor(analyser.frequencyBinCount * 0.35))
         let sum = 0
         for (let i = 0; i < BIN_COUNT; i++) {
-          // slightly logarithmic bin spacing so lows don't hog the stump
-          const start = Math.floor(Math.pow(i / BIN_COUNT, 1.3) * usable)
-          const end = Math.max(start + 1, Math.floor(Math.pow((i + 1) / BIN_COUNT, 1.3) * usable))
+          const start = Math.floor(Math.pow(i / BIN_COUNT, 2.2) * usable)
+          const end = Math.max(start + 1, Math.floor(Math.pow((i + 1) / BIN_COUNT, 2.2) * usable))
           let v = 0
           for (let j = start; j < end; j++) v = Math.max(v, raw[j])
+          // treble tilt: highs are quieter by nature, so the sapwood gets
+          // a boost to keep the whole stump alive
+          v = Math.min(255, v * (1 + Math.pow(i / BIN_COUNT, 2) * 2.2))
           sum += v
           // fast attack, slow release
-          bins[i] = Math.max(v, Math.round(bins[i] * 0.9))
+          bins[i] = Math.max(v, Math.round(bins[i] * 0.88))
         }
         level += ((sum / BIN_COUNT / 255) * 1.4 - level) * 0.08
       } else {

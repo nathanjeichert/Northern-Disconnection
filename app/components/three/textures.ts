@@ -64,6 +64,20 @@ export function makeTreeTexture(seed: number): THREE.CanvasTexture {
   return tex
 }
 
+/** A defocused near-foreground redwood — fat gaussian blur bakes a
+    depth-of-field cue straight into the texture. */
+export function makeBlurredTreeTexture(seed: number): THREE.CanvasTexture {
+  const c = document.createElement('canvas')
+  c.width = 512
+  c.height = 1024
+  const ctx = c.getContext('2d')!
+  const rng = mulberry32(seed * 3271 + 5)
+  ctx.filter = 'blur(14px)'
+  ctx.fillStyle = TREE_INK
+  ctx.fill(new Path2D(coniferPath(256, 992, 900, 225, rng)))
+  return new THREE.CanvasTexture(c)
+}
+
 /** A whole distant ridge line of small conifers on one wide canvas. */
 export function makeRidgeTexture(seed: number): THREE.CanvasTexture {
   const c = document.createElement('canvas')
