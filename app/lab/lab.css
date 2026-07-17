@@ -1,0 +1,109 @@
+/* Styles for the /lab demo shelf. Motion is gated behind
+   prefers-reduced-motion: no-preference so the demos degrade to
+   handsome stills. */
+
+.lab-fog {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(36px);
+  pointer-events: none;
+}
+
+.lab-ray {
+  position: absolute;
+  top: -8%;
+  height: 90%;
+  transform-origin: top center;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.lab-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 9999px;
+  background: var(--cream);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lab-fog--a {
+    animation: lab-fog-drift-a 75s ease-in-out infinite alternate;
+  }
+
+  .lab-fog--b {
+    animation: lab-fog-drift-b 95s ease-in-out infinite alternate;
+  }
+
+  .lab-ray {
+    animation: lab-ray-sway 16s ease-in-out infinite alternate;
+  }
+
+  .lab-ray--slow {
+    animation-duration: 22s;
+    animation-delay: -8s;
+  }
+
+  .lab-star {
+    animation: lab-twinkle 4s ease-in-out infinite;
+  }
+
+  .lab-sway {
+    animation: lab-tree-sway 14s ease-in-out infinite alternate;
+  }
+
+  .lab-sway--slow {
+    animation-duration: 21s;
+    animation-delay: -6s;
+  }
+}
+
+@keyframes lab-fog-drift-a {
+  from { transform: translate3d(-12%, 0, 0) scale(1); opacity: 0.75; }
+  to { transform: translate3d(10%, -4%, 0) scale(1.15); opacity: 1; }
+}
+
+@keyframes lab-fog-drift-b {
+  from { transform: translate3d(8%, 2%, 0) scale(1.1); opacity: 0.9; }
+  to { transform: translate3d(-10%, -2%, 0) scale(0.95); opacity: 0.65; }
+}
+
+@keyframes lab-ray-sway {
+  from { transform: rotate(var(--ray-angle, 8deg)) scaleX(1); opacity: 0.5; }
+  to { transform: rotate(calc(var(--ray-angle, 8deg) + 4deg)) scaleX(1.15); opacity: 0.95; }
+}
+
+@keyframes lab-twinkle {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes lab-tree-sway {
+  from { transform: translate3d(calc(var(--par-x, 0) * var(--par-f, 0px) - 0.3%), calc(var(--par-y, 0) * var(--par-fy, 0px)), 0); }
+  to { transform: translate3d(calc(var(--par-x, 0) * var(--par-f, 0px) + 0.3%), calc(var(--par-y, 0) * var(--par-fy, 0px)), 0); }
+}
+
+/* Halftone print: crossfade layers on hover / .is-inked toggle (touch) */
+.lab-print {
+  cursor: pointer;
+}
+
+.lab-print .lab-print__halftone {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.lab-print:hover .lab-print__halftone,
+.lab-print.is-inked .lab-print__halftone {
+  opacity: 1;
+}
+
+.lab-print .lab-print__photo {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.lab-print:hover .lab-print__photo,
+.lab-print.is-inked .lab-print__photo {
+  opacity: 0.08;
+  transform: scale(1.015);
+}
