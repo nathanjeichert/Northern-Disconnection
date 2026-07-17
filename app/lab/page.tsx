@@ -85,7 +85,7 @@ export default function LabPage() {
         title="Tree Rings"
         tech="web audio analyser → canvas · streams the real g-fest soundboard from archive.org · synth fallback"
         blurb="A redwood stump cross-section that grows with your sound. Press play: the site pulls the actual Live at G-Fest recording from the Internet Archive and pipes it through a frequency analyser — bass swells the heartwood, treble shimmers the outer rings."
-        where="the music page, wrapped around the Archive.org player — every recording becomes a living stump."
+        where="the music page — where it now lives, grown into the full tape-deck player."
       >
         <TreeRings />
       </Specimen>
