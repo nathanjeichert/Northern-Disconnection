@@ -47,7 +47,7 @@ Other page content is inline in its component:
 
 - `app/page.tsx` (server: loads next show) → `app/components/home-client.tsx` — live-photo hero, next-show banner, latest YouTube video, subscribe form
 - `app/about/page.tsx` — about + booking call-out
-- `app/music/page.tsx` — Archive.org "Live at G-Fest 2025" embed
+- `app/music/page.tsx` — "Live at G-Fest 2025" tape-deck player (`app/components/live-tape-player.tsx`): tracklist/seek/volume UI around the WebGL redwood-stump audio visualizer (`app/components/stump-visualizer.tsx`), streaming the item's VBR MP3s via `lib/archive.ts` (Archive metadata API, client-side). Degrades to a plain audio pipeline if CORS data is unavailable, and to the old Archive.org iframe embed if the metadata API is unreachable. Future tapes: render another `<LiveTapePlayer identifier="..." />`.
 
 `/api/youtube/latest` resolves the channel's newest upload: RSS feed first, then a scrape of the channel's Videos tab, then the hardcoded `FALLBACK_VIDEO_ID` in the route. New uploads appear on the homepage without code changes.
 
