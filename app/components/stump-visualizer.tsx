@@ -63,7 +63,7 @@ float fbm(vec2 p) {
 
 void main() {
   vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / (0.5 * min(u_res.x, u_res.y));
-  p *= 1.0 + 0.035 * u_level;                // whole stump breathes with loudness
+  p *= 1.0 + 0.024 * u_level;                // whole stump breathes with loudness
 
   float rot = u_t * 0.018;
   p = mat2(cos(rot), -sin(rot), sin(rot), cos(rot)) * p;
@@ -89,14 +89,14 @@ void main() {
   // drums heave the heartwood, cymbals sizzle the sapwood edge.
   float ringWarp = 1.5 * fbm(pc * 2.6) + 0.55 * fbm(pc * 7.5);
   float kick = pow(amp, 1.5);                // transient-gated, so motion reads as hits
-  float ripple = kick * (0.25 + rn * 1.9) * sin(ang * (3.0 + rn * 10.0) + u_t * (1.5 + rn * 3.0));
-  float rc = (rn * (1.0 - kick * 0.03)) * 60.0 + ringWarp * 3.2 + ripple;
+  float ripple = kick * (0.18 + rn * 1.3) * sin(ang * (3.0 + rn * 10.0) + u_t * (1.5 + rn * 3.0));
+  float rc = (rn * (1.0 - kick * 0.02)) * 60.0 + ringWarp * 3.2 + ripple;
   float ringIdx = floor(rc);
   float f = fract(rc);
   float widthVar = 0.45 + 0.42 * hash(vec2(ringIdx, 7.0));
   // loud bands carve wider, brighter latewood lines
-  float late = smoothstep(widthVar - amp * 0.22, widthVar + 0.18, f) * (0.5 + 0.5 * hash(vec2(ringIdx, 13.0)));
-  late *= 0.65 + amp * 2.1;                  // rings glow with their band
+  float late = smoothstep(widthVar - amp * 0.15, widthVar + 0.18, f) * (0.5 + 0.5 * hash(vec2(ringIdx, 13.0)));
+  late *= 0.7 + amp * 1.5;                   // rings glow with their band
 
   // wood: deep red heartwood grading out to pale sapwood
   vec3 heartDeep = vec3(0.40, 0.185, 0.115);
@@ -108,7 +108,7 @@ void main() {
   wood = mix(wood, sap, smoothstep(0.78, 0.92, rn));
 
   wood *= 1.0 - late * 0.42;
-  wood += vec3(0.91, 0.72, 0.29) * late * pow(amp, 1.8) * 0.5;   // marigold flash on hot rings
+  wood += vec3(0.80, 0.60, 0.24) * late * pow(amp, 2.2) * 0.34;  // amber flash on peaks only
 
   // radial fiber + fine mottle
   wood *= 0.94 + 0.10 * noise(vec2(ang * 34.0, rn * 5.0));
@@ -244,7 +244,7 @@ export default function StumpVisualizer({ analyserRef, playing, synthetic = fals
           v = Math.min(255, v * (1 + Math.pow(i / BIN_COUNT, 2) * 2.2))
           sum += v
           // fast attack, slow release
-          bins[i] = Math.max(v, Math.round(bins[i] * 0.88))
+          bins[i] = Math.max(v, Math.round(bins[i] * 0.86))
         }
         level += ((sum / BIN_COUNT / 255) * 1.4 - level) * 0.08
       } else {
