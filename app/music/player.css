@@ -1,0 +1,154 @@
+/* Tape-deck player controls: poster-styled range inputs, transport
+   buttons, the playing indicator, and loading shimmer. */
+
+.nd-transport {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 2px solid rgba(215, 180, 138, 0.6);
+  background: rgba(12, 35, 24, 0.4);
+  color: var(--cream);
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.nd-transport:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.nd-transport:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.nd-transport--main {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--cream);
+  border-color: var(--cream);
+  color: var(--pine);
+  box-shadow: 3px 3px 0 rgba(215, 180, 138, 0.55);
+}
+
+.nd-transport--main:hover:not(:disabled) {
+  color: var(--pine);
+  border-color: var(--cream);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(215, 180, 138, 0.55);
+}
+
+.nd-transport--main:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 rgba(215, 180, 138, 0.55);
+}
+
+/* Range inputs: flat rust track, square cream thumb with the hard offset
+   shadow — the seek bar as letterpress furniture */
+.nd-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.nd-range:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.nd-range::-webkit-slider-runnable-track {
+  height: 4px;
+  background: rgba(215, 180, 138, 0.35);
+}
+
+.nd-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border-radius: 0;
+  background: var(--cream);
+  border: 2px solid var(--pine);
+  box-shadow: 2px 2px 0 rgba(215, 180, 138, 0.55);
+}
+
+.nd-range::-moz-range-track {
+  height: 4px;
+  background: rgba(215, 180, 138, 0.35);
+}
+
+.nd-range::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 0;
+  background: var(--cream);
+  border: 2px solid var(--pine);
+  box-shadow: 2px 2px 0 rgba(215, 180, 138, 0.55);
+}
+
+.nd-range:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+/* Tiny EQ bars beside the playing track */
+.nd-eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.nd-eq span {
+  width: 3px;
+  height: 100%;
+  background: var(--gold);
+  transform-origin: bottom;
+  animation: nd-eq-bounce 0.9s ease-in-out infinite;
+}
+
+.nd-eq span:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.nd-eq span:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+@keyframes nd-eq-bounce {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nd-eq span {
+    animation: none;
+    transform: scaleY(0.6);
+  }
+}
+
+/* Setlist loading shimmer */
+.nd-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(215, 180, 138, 0.08) 25%,
+    rgba(215, 180, 138, 0.18) 50%,
+    rgba(215, 180, 138, 0.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: nd-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes nd-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nd-skeleton {
+    animation: none;
+  }
+}

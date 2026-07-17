@@ -1,15 +1,17 @@
 import { Youtube } from 'lucide-react'
 import Ornament from '@/app/components/ornament'
+import LiveTapePlayer from '@/app/components/live-tape-player'
+import './player.css'
 
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Music',
-  description: 'Live at G-Fest 2025 — stream the full show from the Internet Archive.',
+  description: 'Live at G-Fest 2025 — stream the full soundboard through the tree-ring tape deck.',
   alternates: { canonical: '/music' },
   openGraph: {
     title: 'Music | Northern Disconnection',
-    description: 'Live at G-Fest 2025 — stream the full show from the Internet Archive.',
+    description: 'Live at G-Fest 2025 — stream the full soundboard through the tree-ring tape deck.',
     url: '/music',
     images: ['/band-photos/gfest-live.jpg'],
   },
@@ -25,17 +27,8 @@ export default function MusicPage() {
           <Ornament className="mt-6" />
         </header>
 
-        {/* Full show — taper-style soundboard from the Internet Archive */}
-        <div className="border-2 border-rust/50 bg-pine/60 p-2 shadow-[8px_8px_0_rgba(215,180,138,0.25)] sm:p-3">
-          <iframe
-            src="https://archive.org/embed/ND2025-09-27?playlist=1&list_height=180"
-            title="Northern Disconnection - Live at G-Fest 2025"
-            className="h-[340px] w-full md:h-[380px]"
-            frameBorder="0"
-            allow="autoplay"
-            allowFullScreen
-          />
-        </div>
+        {/* Full show — taper-style soundboard streamed from the Internet Archive */}
+        <LiveTapePlayer identifier="ND2025-09-27" fallbackTitle="Live at G-Fest 2025" />
 
         <div className="mt-14 text-center">
           <a
