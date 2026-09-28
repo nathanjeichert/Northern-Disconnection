@@ -3,8 +3,10 @@
 //
 // Only genuinely NEW shows are announced: it diffs the file between two git
 // refs and keys shows by venue+date, so edits to existing entries (time,
-// description, typo fixes) never trigger an email. Past-dated shows are
-// ignored. All new shows in one push go out as a single digest.
+// description, typo fixes) never trigger an email. Past shows (the day after,
+// Pacific time) and undated ones ("TBA") are ignored — an undated show is
+// announced once its real date is filled in. All new shows in one push go out
+// as a single digest.
 //
 // Env:
 //   RESEND_API_KEY, RESEND_AUDIENCE_ID — required to send (no-op if missing)
@@ -17,6 +19,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
   parseShowDate,
+  isPastShow,
   showKey,
   renderEmail,
   resendPost,
@@ -80,14 +83,10 @@ if (!before) {
 }
 
 const known = new Set(before.map(showKey))
-// 24h grace so a show added on the day of the gig still announces across timezones
-const cutoff = Date.now() - 24 * 60 * 60 * 1000
+// a show added on the day of the gig still announces; the day after it won't
 const newShows = after
   .filter((s) => s.venue && s.date && !known.has(showKey(s)))
-  .filter((s) => {
-    const d = parseShowDate(s.date)
-    return d !== null && d.getTime() >= cutoff
-  })
+  .filter((s) => parseShowDate(s.date) !== null && !isPastShow(s.date))
   .sort((a, b) => (parseShowDate(a.date)?.getTime() ?? 0) - (parseShowDate(b.date)?.getTime() ?? 0))
 
 if (newShows.length === 0) {

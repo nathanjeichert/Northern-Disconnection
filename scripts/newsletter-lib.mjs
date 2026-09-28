@@ -1,6 +1,7 @@
 // Shared helpers for the newsletter emails: the show-alert and show-reminder
 // scripts and the /api/subscribe welcome email all render through the same
 // chrome (masthead, card, footer) and Resend plumbing here.
+import { parseShowDate } from '../lib/show-dates.mjs'
 
 export const SITE_URL = 'https://www.northerndisconnection.com'
 export const FROM = 'Northern Disconnection <shows@northerndisconnection.com>'
@@ -51,12 +52,9 @@ const DARK = {
   eyebrow: '#e9b949',
 }
 
-// "June 26th, 2026" → Date (same logic as lib/dates.ts)
-export function parseShowDate(value) {
-  const cleaned = String(value ?? '').replace(/(\d+)(st|nd|rd|th)/i, '$1')
-  const parsed = new Date(cleaned)
-  return Number.isNaN(parsed.getTime()) ? null : parsed
-}
+// Show dates: the same strict parser and Pacific-time "has it happened" logic
+// the website uses (lib/show-dates.mjs), so emails and site always agree.
+export { parseShowDate, isPastShow, daysUntilShow } from '../lib/show-dates.mjs'
 
 export const showKey = (s) =>
   `${String(s.date ?? '').trim().toLowerCase()}|${String(s.venue ?? '').trim().toLowerCase()}`

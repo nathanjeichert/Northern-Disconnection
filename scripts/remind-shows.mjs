@@ -19,7 +19,7 @@ import { writeFileSync, readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
-  parseShowDate,
+  daysUntilShow,
   showKey,
   renderEmail,
   resendPost,
@@ -39,17 +39,8 @@ function loadShows(file) {
   }
 }
 
-const MS_PER_DAY = 24 * 60 * 60 * 1000
-
-// Whole days from today (UTC date) to the show date. 0 = today, 7 = a week out.
-function daysUntil(show) {
-  const d = parseShowDate(show.date)
-  if (!d) return null
-  const now = new Date()
-  const todayUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
-  const showUtc = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
-  return Math.round((showUtc - todayUtc) / MS_PER_DAY)
-}
+// Whole days from today (Pacific) to the show date. 0 = today, 7 = a week out.
+const daysUntil = (show) => daysUntilShow(show.date)
 
 const reminderName = (show) => `Reminder | ${showKey(show)}`
 

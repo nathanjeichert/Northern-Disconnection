@@ -47,7 +47,7 @@ Palette lives in `app/global.css` `:root` variables (`--pine`, `--cream`, `--rus
 
 ## Content
 
-The only dynamic content file is `content/shows.json`, loaded at build time by `lib/content.ts` (`getShowsContent()`). Edit the JSON (locally or via GitHub's web UI) and Vercel redeploys automatically. Dates are strings like `"June 26th, 2026"` (abbreviations like "Sept 5, 2026" work; a missing year means the next occurrence; anything unreadable, e.g. "TBA", is displayed as written and treated as undated); `lib/dates.ts` parses them strictly and sorts them and finds the next upcoming show (home hero banner + shows page badge). Pushing new upcoming shows also triggers the subscriber announcement email (see Newsletter below).
+The only dynamic content file is `content/shows.json`, loaded at build time by `lib/content.ts` (`getShowsContent()`). Edit the JSON (locally or via GitHub's web UI) and Vercel redeploys automatically. Dates are strings like `"June 26th, 2026"` (abbreviations like "Sept 5, 2026" work; a missing year means the next occurrence; anything unreadable, e.g. "TBA", is displayed as written and treated as undated); `lib/show-dates.mjs` parses them strictly (shared by the site via `lib/dates.ts` and by the newsletter scripts, so both always agree), and the site sorts them and finds the next upcoming show (home hero banner + shows page badge). Past shows drop off automatically: `/` and `/shows` filter out any show whose day is over in Pacific time and re-render hourly (`revalidate = 3600`), so a gig disappears the day after it happens with no edit or redeploy — the JSON entry itself can stay. Pushing new upcoming shows also triggers the subscriber announcement email (see Newsletter below).
 
 Other page content is inline in its component:
 
@@ -74,8 +74,8 @@ Fully automatic gig-alert emails; day-to-day it needs nothing. Architecture:
 
 - **Subscribers** live in a Resend Audience (free tier: 3,000 emails/mo, 100/day, 1,000 contacts).
 - **Signups**: site form POSTs to `/api/subscribe` → adds contact + sends best-effort welcome email. Spam defense: hidden honeypot field (`company`) plus a best-effort in-memory rate limit.
-- **Announcements**: `.github/workflows/announce-shows.yml` runs on pushes touching `content/shows.json`, diffs against the previous commit, and sends one digest Broadcast only for genuinely new, upcoming shows. Edits/typo fixes never email anyone.
-- **Reminders**: `.github/workflows/remind-shows.yml` (daily cron, 16:00 UTC) emails for shows within 7 days. Dedupe via deterministic broadcast names (`Reminder | <date> | <venue>`) — each show reminded exactly once.
+- **Announcements**: `.github/workflows/announce-shows.yml` runs on pushes touching `content/shows.json`, diffs against the previous commit, and sends one digest Broadcast only for genuinely new, upcoming shows. Edits/typo fixes never email anyone. Undated shows ("TBA") aren't announced; filling in the real date later counts as a new show and announces it then.
+- **Reminders**: `.github/workflows/remind-shows.yml` (daily cron, 16:00 UTC) emails for shows within 7 days (days counted in Pacific time). Dedupe via deterministic broadcast names (`Reminder | <date> | <venue>`) — each show reminded exactly once.
 - **Shared chrome**: `scripts/newsletter-lib.mjs` (`renderChrome()`, `renderWelcomeEmail()`, Resend helpers). Unsubscribes are Resend one-click, auto-suppressed.
 
 Email design: built to survive Gmail's forced dark-mode inversion (no opt-out exists) — the masthead is an image (`public/email-masthead.png`, regenerate with `node scripts/make-email-masthead.mjs` after logo/palette changes), the HTML palette uses light surfaces and midtone accents that invert gracefully, and clients with real hooks (Apple Mail, Outlook.com) get the branded `DARK` palette in `newsletter-lib.mjs`.

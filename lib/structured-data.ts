@@ -1,7 +1,7 @@
 // JSON-LD structured data (schema.org) for search engines.
 // MusicGroup renders sitewide (layout); MusicEvent per upcoming show (/shows).
 import type { Show } from '@/types/content'
-import { parseShowDate } from '@/lib/dates'
+import { isPastShow, parseShowDate } from '@/lib/dates'
 import { baseUrl } from 'app/sitemap'
 
 export const BAND_ID = `${baseUrl}/#band`
@@ -111,14 +111,8 @@ export function musicEventJsonLd(show: Show) {
 
 // One @graph script for all upcoming shows (past-dated entries are skipped).
 export function upcomingEventsJsonLd(shows: Show[]) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
   const events = shows
-    .filter((show) => {
-      const date = parseShowDate(show.date)
-      return date !== null && date.getTime() >= today.getTime()
-    })
+    .filter((show) => parseShowDate(show.date) !== null && !isPastShow(show.date))
     .map(musicEventJsonLd)
     .filter((event) => event !== null)
 

@@ -1,10 +1,14 @@
 import type { Metadata } from 'next'
 import { getShowsContent } from '@/lib/content'
-import { sortShowsByDate, findNextShowIndex } from '@/lib/dates'
+import { sortShowsByDate, findNextShowIndex, upcomingOnly } from '@/lib/dates'
 import { upcomingEventsJsonLd } from '@/lib/structured-data'
 import ShowsClient from './shows-client'
 
 const description = 'Upcoming concerts and events for Northern Disconnection.'
+
+// Re-render hourly so each show drops off the list the day after it happens
+// (Pacific time) without needing a redeploy.
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Shows',
@@ -20,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function ShowsPage() {
   const content = getShowsContent()
-  const sortedShows = sortShowsByDate(content.upcomingShows)
+  const sortedShows = sortShowsByDate(upcomingOnly(content.upcomingShows))
   const nextShowIndex = findNextShowIndex(sortedShows)
   const eventsJsonLd = upcomingEventsJsonLd(sortedShows)
 

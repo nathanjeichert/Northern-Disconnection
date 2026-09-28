@@ -1,36 +1,9 @@
 import type { Show } from '@/types/content'
 
-const MONTHS = [
-  'january', 'february', 'march', 'april', 'may', 'june',
-  'july', 'august', 'september', 'october', 'november', 'december',
-]
-
-// Show dates are human-readable strings like "June 26th, 2026". Parsed
-// strictly — an optional weekday, a month name or abbreviation ("Sept"),
-// a day, and an optional year — because Date's own parser guesses: it
-// reads "TBA — Fall 2026" as January 1st and "August 21st" as 2001.
-// Anything unrecognised returns null so callers show the raw text instead.
-// A missing year means the next time that date comes around.
-export function parseShowDate(value: string): Date | null {
-  const match = value
-    .trim()
-    .match(/^(?:[a-z]+\.?,?\s+)?([a-z]{3,})\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s+(\d{4}))?$/i)
-  if (!match) return null
-  const month = MONTHS.findIndex((name) => name.startsWith(match[1].toLowerCase()))
-  if (month === -1) return null
-  const day = Number(match[2])
-  let year = match[3] ? Number(match[3]) : new Date().getFullYear()
-  const build = (y: number) => new Date(y, month, day)
-  let date = build(year)
-  if (!match[3]) {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    if (date.getTime() < today.getTime()) date = build(++year)
-  }
-  // reject impossible days (Feb 30th) rather than letting them roll over
-  if (date.getMonth() !== month || date.getDate() !== day) return null
-  return date
-}
+// Parsing and "has it happened yet" live in show-dates.mjs, shared with the
+// newsletter scripts so the site and the emails always agree.
+export { parseShowDate, isPastShow, showToday } from './show-dates.mjs'
+import { isPastShow, parseShowDate, showToday } from './show-dates.mjs'
 
 export function sortShowsByDate(shows: Show[]): Show[] {
   return [...shows].sort((a, b) => {
@@ -43,10 +16,15 @@ export function sortShowsByDate(shows: Show[]): Show[] {
   })
 }
 
+// Shows that haven't happened yet: a show stays listed through its own day
+// (Pacific time) and drops off the day after. Undated shows ("TBA") stay.
+export function upcomingOnly(shows: Show[]): Show[] {
+  return shows.filter((show) => !isPastShow(show.date))
+}
+
 // Index (within the date-sorted list) of the first show on or after today.
 export function findNextShowIndex(sortedShows: Show[]): number {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const today = showToday()
 
   return sortedShows.findIndex((show) => {
     const date = parseShowDate(show.date)
