@@ -1,0 +1,180 @@
+/*
+  Hero logo: the hand-drawn mark and wordmark rebuilt as separately
+  colourable layers. Each layer is a plain box painted through a CSS mask
+  of the original artwork (vector ink, vector fill regions, raster
+  wordmark), so the drawing itself is never altered — only its inks.
+
+  Geometry mirrors /logo-hero.png (1280×720): the mark sits at
+  (32.6, 5.6) scaled 0.7228; the wordmark at (253, 128) at 1:1.
+  Offsets use container-query units, so 1cqw = 1% of the logo width.
+  Only the Screenprint treatment ships: see hero-logo.tsx.
+*/
+
+.hl-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1280 / 720;
+  container-type: inline-size;
+  --hl-px: 0;
+  --hl-py: 0;
+}
+
+.hl-mark,
+.hl-word {
+  position: absolute;
+}
+
+.hl-mark {
+  left: 2.543%;
+  top: 0.771%;
+  width: 18.41%;
+  height: 97.58%;
+}
+
+.hl-word {
+  left: 19.766%;
+  top: 17.778%;
+  width: 78.36%;
+  height: 59.17%;
+}
+
+.hl-full {
+  position: absolute;
+  inset: 0;
+}
+
+.hl-ink,
+.hl-fill,
+.hl-sil,
+.hl-wordmask {
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+
+.hl-ink {
+  -webkit-mask-image: url('/logo/mark-ink.svg');
+  mask-image: url('/logo/mark-ink.svg');
+}
+
+.hl-fill {
+  -webkit-mask-image: url('/logo/mark-fill.svg');
+  mask-image: url('/logo/mark-fill.svg');
+}
+
+.hl-sil {
+  -webkit-mask-image: url('/logo/mark-fill.svg'), url('/logo/mark-ink.svg');
+  mask-image: url('/logo/mark-fill.svg'), url('/logo/mark-ink.svg');
+  -webkit-mask-size: 100% 100%, 100% 100%;
+  mask-size: 100% 100%, 100% 100%;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-composite: source-over;
+  mask-composite: add;
+}
+
+.hl-wordmask {
+  -webkit-mask-image: url('/logo-wordmark.png');
+  mask-image: url('/logo-wordmark.png');
+}
+
+/* ---------------------------------------------------------------- */
+/* Screenprint: three ink pulls land in register (almost).           */
+/* ---------------------------------------------------------------- */
+
+.sp-plate {
+  position: absolute;
+  inset: 0;
+  /* squeegee wipe: a soft-edged window slides across the plate */
+  -webkit-mask-image: linear-gradient(100deg, #000 40%, transparent 60%);
+  mask-image: linear-gradient(100deg, #000 40%, transparent 60%);
+  -webkit-mask-size: 260% 100%;
+  mask-size: 260% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 100% 0;
+  mask-position: 100% 0;
+  animation: sp-pull 0.85s cubic-bezier(0.55, 0.05, 0.25, 1) forwards, sp-land 1.1s cubic-bezier(0.2, 0.9, 0.25, 1) forwards;
+  transform: translate(calc(var(--land-x) + var(--hl-px) * var(--depth) * 1cqw), calc(var(--land-y) + var(--hl-py) * var(--depth) * 1cqw));
+  will-change: transform;
+}
+
+.sp-plate--burgundy {
+  --rest-x: 1.25cqw;
+  --rest-y: 1.25cqw;
+  --from-x: 4.5cqw;
+  --from-y: 3cqw;
+  --depth: 0.9;
+  animation-delay: 0.15s, 0.15s;
+}
+
+.sp-plate--gold {
+  --rest-x: 0.62cqw;
+  --rest-y: 0.62cqw;
+  --from-x: -3cqw;
+  --from-y: 2.2cqw;
+  --depth: 0.45;
+  animation-delay: 0.45s, 0.45s;
+}
+
+.sp-plate--key {
+  --rest-x: 0cqw;
+  --rest-y: 0cqw;
+  --from-x: 0cqw;
+  --from-y: -1.2cqw;
+  --depth: 0;
+  animation-delay: 0.8s, 0.8s;
+}
+
+@property --land-x {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --land-y {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@keyframes sp-pull {
+  from {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+  }
+  to {
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+  }
+}
+
+@keyframes sp-land {
+  from {
+    --land-x: var(--from-x);
+    --land-y: var(--from-y);
+  }
+  to {
+    --land-x: var(--rest-x);
+    --land-y: var(--rest-y);
+  }
+}
+
+/* grain inside the inks: the key plate's cream reads as printed, not flat */
+.sp-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.06 0 0 0 0 0.14 0 0 0 0 0.09 0 0 0 1.4 -0.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hl-box *,
+  .hl-box *::before,
+  .hl-box *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
+}

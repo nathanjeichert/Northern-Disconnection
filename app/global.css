@@ -88,21 +88,6 @@ body {
   background-size: 256px 256px;
 }
 
-/* Printer's-mark watermark: the logo line art, fixed and faint behind
-   page content so the open pine midsections carry a little texture */
-.watermark-overlay {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image: url('/logonotext.svg');
-  background-repeat: no-repeat;
-  background-position: center 42%;
-  background-size: auto min(58vmin, 30rem);
-  filter: brightness(0) invert(0.96) sepia(0.22);
-  opacity: 0.04;
-}
-
 /* Palette utilities */
 .text-cream { color: var(--cream); }
 .text-parchment { color: var(--parchment); }
@@ -224,14 +209,6 @@ body {
 /* Renders the black-ink logo artwork in warm cream (small marks on dark bg) */
 .logo-cream {
   filter: brightness(0) invert(0.96) sepia(0.22) drop-shadow(0 6px 28px rgba(0, 0, 0, 0.55));
-}
-
-/* Hero logo over photography: a whisper of a cream edge for the ink mark
-   plus a soft dark shadow so the cream lettering keeps separation */
-.logo-ink {
-  filter:
-    drop-shadow(0 0 1px rgba(247, 242, 229, 0.5))
-    drop-shadow(0 2px 10px rgba(12, 35, 24, 0.55));
 }
 
 /* Slow drifting glow behind featured panels */

@@ -8,6 +8,7 @@ import { Music, Calendar, Mail, MapPin } from 'lucide-react'
 import type { Show } from '@/types/content'
 import { getWeekday } from '@/lib/dates'
 import SubscribeForm from './subscribe-form'
+import HeroLogo from './hero/hero-logo'
 import Ornament from './ornament'
 
 type LatestVideo = {
@@ -96,14 +97,22 @@ export default function HomeClient({ nextShow }: HomeClientProps) {
       {/* ============ HERO — live at G-Fest ============ */}
       <section className="relative flex min-h-[100svh] flex-col overflow-hidden px-4 pb-12">
         {/* zoomed and bottom-anchored so the band's faces sit above the text block */}
-        <Image
-          src="/band-photos/gfest-live.jpg"
-          alt="Northern Disconnection performing live on the riverfront stage at G-Fest"
-          fill
-          priority
-          sizes="100vw"
-          className="origin-bottom -translate-y-12 scale-[1.2] object-cover object-center"
-        />
+        {/* the photo settles in as the logo lands */}
+        <motion.div
+          className="absolute inset-0 origin-bottom"
+          initial={{ scale: 1.07, opacity: 0.6 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 2.6, ease: [0.2, 0.7, 0.2, 1] }}
+        >
+          <Image
+            src="/band-photos/gfest-live.jpg"
+            alt="Northern Disconnection performing live on the riverfront stage at G-Fest"
+            fill
+            priority
+            sizes="100vw"
+            className="origin-bottom -translate-y-12 scale-[1.2] object-cover object-center"
+          />
+        </motion.div>
         {/* light dusk wash so the type reads over the daylight photo */}
         <div className="absolute inset-0 bg-[#0c2318]/15" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0c2318]/40 via-transparent to-[#0c2318]" />
@@ -123,21 +132,10 @@ export default function HomeClient({ nextShow }: HomeClientProps) {
         />
 
         <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center gap-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.1, ease: 'easeOut' }}
-            className="w-full max-w-[35rem]"
-          >
-            <Image
-              src="/logo-hero.png"
-              alt="Northern Disconnection"
-              width={900}
-              height={506}
-              priority
-              className="logo-ink h-auto w-full"
-            />
-          </motion.div>
+          {/* the screenprint logo carries its own landing choreography */}
+          <div className="w-full max-w-[min(52.5rem,92svh)]">
+            <HeroLogo />
+          </div>
 
           <motion.p
             initial={{ opacity: 0, y: 16 }}

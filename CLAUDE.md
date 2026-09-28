@@ -25,7 +25,13 @@ Palette lives in `app/global.css` `:root` variables (`--pine`, `--cream`, `--rus
 - `.eyebrow` — small-caps section label
 - `.ornament` — fleuron divider (`<div class="ornament">❦</div>`)
 - `.vintage-shadow` — letterpress heading shadow
-- `.logo-cream` — CSS-filter recolor rendering the black-ink logo in cream (nav, footer, home hero)
+- `.logo-cream` — CSS-filter recolor rendering the black-ink logo in cream (nav, footer)
+
+### Art pieces
+
+- **Logo layers** — `public/logo/mark-ink.svg` and `mark-fill.svg` split the hand-drawn mark's vector trace (`public/logonotext.svg`) into its ink lines and fill regions; with `public/logo-wordmark.png` they're used as CSS masks so each can be inked separately. Never redraw or distort the artwork — recolor/mask only.
+- **Home hero logo** — `app/components/hero/hero-logo.tsx` (+ `hero-logo.css`): a three-colour "screenprint" — burgundy and gold plates pull in, the cream key plate lands almost in register on top, and the plates drift slightly with the pointer. Geometry mirrors `/logo-hero.png`; offsets use container-query units.
+- **Site backdrop** — `app/components/backdrop/site-backdrop.tsx` mounts a fixed, dim topographic-map fragment shader (`lib/art/backdrops.ts`) behind every page via the small runner in `lib/art/shader-scene.ts` (resolution scaling, fps cap, offscreen/hidden pause, reduced-motion still frame), plus a compass rose.
 
 ### Layout Structure
 
@@ -41,13 +47,15 @@ Palette lives in `app/global.css` `:root` variables (`--pine`, `--cream`, `--rus
 
 ## Content
 
-The only dynamic content file is `content/shows.json`, loaded at build time by `lib/content.ts` (`getShowsContent()`). Edit the JSON (locally or via GitHub's web UI) and Vercel redeploys automatically. Dates are strings like `"June 26th, 2026"`; `lib/dates.ts` parses and sorts them and finds the next upcoming show (home hero banner + shows page badge). Pushing new upcoming shows also triggers the subscriber announcement email (see Newsletter below).
+The only dynamic content file is `content/shows.json`, loaded at build time by `lib/content.ts` (`getShowsContent()`). Edit the JSON (locally or via GitHub's web UI) and Vercel redeploys automatically. Dates are strings like `"June 26th, 2026"` (abbreviations like "Sept 5, 2026" work; a missing year means the next occurrence; anything unreadable, e.g. "TBA", is displayed as written and treated as undated); `lib/dates.ts` parses them strictly and sorts them and finds the next upcoming show (home hero banner + shows page badge). Pushing new upcoming shows also triggers the subscriber announcement email (see Newsletter below).
 
 Other page content is inline in its component:
 
 - `app/page.tsx` (server: loads next show) → `app/components/home-client.tsx` — live-photo hero, next-show banner, latest YouTube video, subscribe form
 - `app/about/page.tsx` — about + booking call-out
-- `app/music/page.tsx` — "Live at G-Fest 2025" tape-deck player (`app/components/live-tape-player.tsx`): tracklist/seek/volume UI around the WebGL redwood-stump audio visualizer (`app/components/stump-visualizer.tsx`), streaming the item's VBR MP3s via `lib/archive.ts` (Archive metadata API, client-side). Degrades to a plain audio pipeline if CORS data is unavailable, and to the old Archive.org iframe embed if the metadata API is unreachable. Future tapes: render another `<LiveTapePlayer identifier="..." />`.
+- `app/music/page.tsx` — "Live at G-Fest 2025" tape-deck player (`app/components/live-tape-player.tsx`): tracklist/seek/volume UI around the redwood-stump audio visualizer (`app/components/stump-visualizer.tsx` → `app/components/stump/woodcut.tsx`: a living linocut whose inked rings, one per frequency band, are carved by the music; analysis in `stump/analysis.ts`). Streams the item's VBR MP3s via `lib/archive.ts`, which builds per-track URL lists straight to the item's datanodes (`d1`, `d2`, …) with `archive.org/download` last — its redirect mirror has been returning HTTP 500s. The player retries the analysed (CORS + Web Audio) pipeline host by host, falls back to a plain pipeline per song only, pre-buffers the first song while the page is open and the next song near the end of each track. Degrades to the old Archive.org iframe embed if the metadata API is unreachable. Future tapes: render another `<LiveTapePlayer identifier="..." />`.
+
+Show flyers ("Share Flyer" on /shows): `app/components/show-flyer-modal.tsx` draws seeded canvas posters via `lib/flyer/` — `index.ts` (API), `kit.ts` (paper/ink/misregistration/text helpers), and one file per style in `lib/flyer/styles/` (Hatch Show, National Park, Tree Rings, Topo, Night Sky, Marbled, Fillmore, Woodcut, Golden State, Ticket Stub). Extra flyer fonts are self-hosted in `public/fonts/flyer/` and loaded only when a flyer is drawn.
 
 `/api/youtube/latest` resolves the channel's newest upload: RSS feed first, then a scrape of the channel's Videos tab, then the hardcoded `FALLBACK_VIDEO_ID` in the route. New uploads appear on the homepage without code changes.
 
