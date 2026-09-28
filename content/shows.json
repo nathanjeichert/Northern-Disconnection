@@ -20,6 +20,15 @@
       "description": "",
       "hasTickets": false,
       "soldOut": false
+    },
+    {
+      "date": "November 1st, 2026",
+      "time": "7:00 PM",
+      "venue": "Kilowatt",
+      "location": "San Francisco, CA",
+      "description": "",
+      "hasTickets": false,
+      "soldOut": false
     }
   ]
 }
