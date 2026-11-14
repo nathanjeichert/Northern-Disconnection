@@ -709,26 +709,12 @@ export default function LiveTapePlayer({ identifier, fallbackTitle = 'Live tape'
     effectiveDuration && effectiveDuration > 0 ? Math.min(1, Math.max(0, currentTime / effectiveDuration)) : 0
   const synthetic = pipeline !== 'analysed' || !ctxRunning
 
-  const status = streamError
-    ? 'this song won’t load right now — try another, or open the tape on archive.org'
-    : needsTap
-      ? 'tap play to keep the tape rolling'
-      : buffering && started
-        ? 'cueing the tape…'
-        : playing
-          ? 'soundboard tape · streaming from the internet archive'
-          : started
-            ? 'paused — tap the stump to pick it back up'
-            : show
-              ? `${show.tracks.length} songs · tap the stump or press play`
-              : ' '
+  // Only failures get a line under the title; the transport shows play state.
+  const status = streamError ? 'This song won’t load right now. Try another, or open the tape on archive.org.' : null
 
   if (loadState === 'error') {
     return (
       <div className="border-2 border-rust/50 bg-pine/60 p-2 shadow-[8px_8px_0_rgba(215,180,138,0.25)] sm:p-3">
-        <div className="px-3 py-4 text-center text-sm italic text-sand/80">
-          The tape deck couldn&apos;t reach the Internet Archive just now — here&apos;s the reserve player.
-        </div>
         <iframe
           src={`https://archive.org/embed/${identifier}?playlist=1&list_height=180`}
           title={fallbackTitle}
@@ -774,7 +760,7 @@ export default function LiveTapePlayer({ identifier, fallbackTitle = 'Live tape'
         <h2 className="font-display mt-1 text-center text-2xl text-cream sm:text-3xl">
           {track?.title ?? fallbackTitle}
         </h2>
-        <p className="mt-1.5 min-h-[1.25rem] text-center text-xs italic text-sand/60" aria-live="polite">
+        <p className="mt-1.5 text-center text-xs italic text-sand/60" aria-live="polite">
           {status}
         </p>
 
