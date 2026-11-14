@@ -4,6 +4,11 @@ const CHANNEL_ID = 'UCOpZMRlcndhoCcN1knIHIHA'
 const CHANNEL_HANDLE = 'northerndisconnection'
 const FEED_URL = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + CHANNEL_ID
 
+// Pinned homepage video: when set, it is shown instead of the newest upload.
+// Set to null to go back to showing the latest upload automatically.
+const FEATURED_VIDEO_ID: string | null = 'P9Yb_kUIUGo'
+const FEATURED_TITLE = 'Nighttime in the Switching Yard, Live at G-Fest 2026'
+
 // Last-resort fallback if both the RSS feed and the channel page are
 // unreachable (the feed has had day-long outages for this channel).
 const FALLBACK_VIDEO_ID = 'nekXO8t1tcE'
@@ -131,6 +136,11 @@ async function fetchFallback(): Promise<LatestVideo> {
 }
 
 export async function GET() {
+  if (FEATURED_VIDEO_ID) {
+    const meta = await fetchTitle(FEATURED_VIDEO_ID)
+    return jsonWithCache(videoPayload(FEATURED_VIDEO_ID, meta?.title ?? FEATURED_TITLE, null, meta?.thumbnail ?? null))
+  }
+
   try {
     const fromFeed = await fetchFromFeed()
     if (fromFeed) return jsonWithCache(fromFeed)
