@@ -109,6 +109,57 @@ function cleanTitle(file: ArchiveFileRaw, index: number): string {
   return stem || `Track ${index + 1}`
 }
 
+/** Track number from an etree-style file name, e.g. "nd2026-09-19_04_wheel_ruts.wav" -> 4. */
+function trackNoFromName(name: string): number | undefined {
+  const m = name.replace(/^.*\//, '').match(/_(\d{1,2})_/)
+  return m ? parseInt(m[1], 10) : undefined
+}
+
+/**
+ * Song titles from the item description's setlist ("01. Song Title" lines).
+ * Fresh uploads have no per-file titles until the Archive's derive job runs,
+ * so the WAV fallback names songs from here.
+ */
+function setlistFromDescription(description: unknown): Map<number, string> {
+  const titles = new Map<number, string>()
+  if (typeof description !== 'string') return titles
+  const text = description
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/?(div|p|li)[^>]*>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<')
+    .replace(/&amp;/g, '&')
+  for (const line of text.split('\n')) {
+    const m = line.trim().match(/^(\d{1,2})[.)]\s+(.+?)[\s*>]*$/)
+    if (m && !titles.has(parseInt(m[1], 10))) titles.set(parseInt(m[1], 10), m[2].trim())
+  }
+  return titles
+}
+
+/**
+ * Streamable audio, best first: the Archive's VBR MP3 derivatives, any other
+ * MP3, then lossless originals (FLAC, WAV). New items have only their
+ * originals until the derive job finishes (it can take days), so the lossless
+ * files keep the deck playing in the meantime; the MP3s take over on their own.
+ */
+function pickStreamFiles(files: ArchiveFileRaw[]): { files: ArchiveFileRaw[]; lossless: boolean } {
+  const ext = (f: ArchiveFileRaw, e: string) => f.name?.toLowerCase().endsWith(e)
+  const tiers: ((f: ArchiveFileRaw) => boolean)[] = [
+    (f) => f.format === 'VBR MP3',
+    (f) => ext(f, '.mp3'),
+    (f) => ext(f, '.flac'),
+    (f) => ext(f, '.wav'),
+  ]
+  for (const [i, test] of tiers.entries()) {
+    const picked = files.filter(test)
+    if (picked.length > 0) return { files: picked, lossless: i >= 2 }
+  }
+  return { files: [], lossless: false }
+}
+
 /** Fetches an item's streamable tracklist from the Archive metadata API. */
 export async function fetchArchiveShow(identifier: string, signal?: AbortSignal): Promise<ArchiveShow> {
   const res = await fetch(`https://archive.org/metadata/${identifier}`, { signal })
@@ -116,21 +167,22 @@ export async function fetchArchiveShow(identifier: string, signal?: AbortSignal)
   const data = await res.json()
   const files: ArchiveFileRaw[] = Array.isArray(data?.files) ? data.files : []
 
-  let mp3s = files.filter((f) => f.format === 'VBR MP3')
-  if (mp3s.length === 0) mp3s = files.filter((f) => f.name?.toLowerCase().endsWith('.mp3'))
-  if (mp3s.length === 0) throw new Error('no streamable tracks in item')
+  const picked = pickStreamFiles(files)
+  if (picked.files.length === 0) throw new Error('no streamable tracks in item')
+  const setlist = picked.lossless ? setlistFromDescription(data?.metadata?.description) : new Map<number, string>()
 
   const hosts = readHosts(data ?? {})
-  const tracks = mp3s
+  const tracks = picked.files
     .map((f, i) => {
       const urls = archiveStreamUrls(identifier, f.name, hosts)
+      const track = parseTrackNo(f.track, trackNoFromName(f.name) ?? i + 1)
       return {
-        title: cleanTitle(f, i),
+        title: f.title || setlist.get(track) || cleanTitle(f, i),
         file: f.name,
         url: urls[0],
         urls,
         seconds: parseLength(f.length),
-        track: parseTrackNo(f.track, i + 1),
+        track,
       }
     })
     .sort((a, b) => a.track - b.track || a.file.localeCompare(b.file))
