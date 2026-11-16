@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { Instagram, Youtube } from 'lucide-react'
 
-const BOOKING_EMAIL = 'nathanjeichert@gmail.com'
+const BOOKING_EMAIL = 'booking@northerndisconnection.com'
 
 export default function Footer() {
   return (

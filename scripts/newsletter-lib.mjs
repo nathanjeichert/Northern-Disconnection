@@ -5,7 +5,7 @@ import { parseShowDate } from '../lib/show-dates.mjs'
 
 export const SITE_URL = 'https://www.northerndisconnection.com'
 export const FROM = 'Northern Disconnection <shows@northerndisconnection.com>'
-export const REPLY_TO = 'nathanjeichert@gmail.com'
+export const REPLY_TO = 'booking@northerndisconnection.com'
 // CAN-SPAM: commercial email needs a valid physical/postal location.
 export const MAILING_LOCATION = 'Sonoma County, CA'
 

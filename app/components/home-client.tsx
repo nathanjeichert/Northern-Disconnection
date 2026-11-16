@@ -186,7 +186,7 @@ export default function HomeClient({ nextShow }: HomeClientProps) {
               <Calendar size={16} />
               All Shows
             </Link>
-            <a href="mailto:nathanjeichert@gmail.com" className="retro-button retro-button--ghost">
+            <a href="mailto:booking@northerndisconnection.com" className="retro-button retro-button--ghost">
               <Mail size={16} />
               Contact
             </a>

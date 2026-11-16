@@ -90,7 +90,7 @@ export default function AboutPage() {
           <p className="mb-6 text-lg text-sand">
             Venues, festivals, and private events around the Bay Area — drop us a line.
           </p>
-          <a href="mailto:nathanjeichert@gmail.com" className="retro-button">
+          <a href="mailto:booking@northerndisconnection.com" className="retro-button">
             <Mail size={16} />
             Contact Us
           </a>

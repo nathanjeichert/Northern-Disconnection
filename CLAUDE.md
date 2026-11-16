@@ -83,7 +83,7 @@ Email design: built to survive Gmail's forced dark-mode inversion (no opt-out ex
 Ops reference:
 
 - Secrets: `RESEND_API_KEY` + `RESEND_AUDIENCE_ID` in Vercel env (signup form) **and** GitHub Actions secrets (broadcasts). Rotate with `npx vercel env rm/add` + `gh secret set RESEND_API_KEY --repo nathanjeichert/Northern-Disconnection`.
-- Every email sets `Reply-To: nathanjeichert@gmail.com`. There is no inbound `@northerndisconnection.com` mail — Namecheap's Custom MX (needed for Resend's `send` MX record) disables its email forwarding. If inbound mail is ever wanted, move DNS to Cloudflare.
-- DNS (Namecheap → Advanced DNS): DKIM TXT `resend._domainkey`, SPF TXT + MX on `send`. If re-verifying a domain in Resend, click Verify once and wait ~15 min — repeated clicks restart detection.
+- Every email sets `Reply-To: booking@northerndisconnection.com` (the same address the site shows for booking). Inbound mail is free DNS-only forwarding via Forward Email: root MX `mx1`/`mx2.forwardemail.net` plus TXT `forward-email=booking:<gmail>` on `@` (change the TXT to add or reroute addresses; no account involved). It coexists with Resend because Namecheap's Custom MX mode allows both the root and `send` MX records.
+- DNS (Namecheap → Advanced DNS): DKIM TXT `resend._domainkey`, SPF TXT + MX on `send` (Resend); MX + `forward-email=` TXT on `@` (forwarding). If re-verifying a domain in Resend, click Verify once and wait ~15 min — repeated clicks restart detection.
 - Dry-run an announcement locally (renders HTML, sends nothing):
   `BEFORE_FILE=old-shows.json AFTER_FILE=content/shows.json DRY_RUN=1 node scripts/announce-shows.mjs`
