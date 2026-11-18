@@ -124,23 +124,6 @@
   }
 }
 
-.press-intro__label {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
-}
-
-.press-intro__time {
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  opacity: 0.7;
-}
-
 .press-intro__chrome {
   position: absolute;
   z-index: 3;

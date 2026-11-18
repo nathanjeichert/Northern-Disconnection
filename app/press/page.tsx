@@ -8,7 +8,7 @@ import Ornament from '@/app/components/ornament'
 import press from '@/content/press.json'
 import PressIntro from './press-intro'
 import PressTracks from './press-tracks'
-import { CopyButton, ReplayButton } from './press-buttons'
+import { CopyButton } from './press-buttons'
 import './press.css'
 
 const title = 'Press Kit'
@@ -34,10 +34,10 @@ const stagePlotSvg = fs.readFileSync(path.join(process.cwd(), 'public/press/stag
 const CONTENT_ID = 'press-kit'
 const leadPhoto = press.photos.find((p) => p.lead) ?? press.photos[0]
 
-function SectionHead({ eyebrow, title }: { eyebrow: string; title: string }) {
+function SectionHead({ eyebrow, title }: { eyebrow?: string; title: string }) {
   return (
     <header className="press-head">
-      <p className="eyebrow">{eyebrow}</p>
+      {eyebrow && <p className="eyebrow">{eyebrow}</p>}
       <h2 className="font-display text-3xl text-cream sm:text-4xl">{title}</h2>
     </header>
   )
@@ -66,7 +66,6 @@ export default function PressPage() {
                 <Mail size={16} />
                 Booking
               </a>
-              <ReplayButton />
             </div>
           </header>
 
@@ -132,7 +131,7 @@ export default function PressPage() {
 
           {/* ============ HIGHLIGHTS + VENUES ============ */}
           <section className="press-section">
-            <SectionHead eyebrow="Highlights" title="Shows, radio & G-Fest" />
+            <SectionHead title="Recent Highlights" />
             <ul className="press-highlights">
               {press.highlights.map((h) => (
                 <li key={h.title}>

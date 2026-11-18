@@ -3,21 +3,21 @@
   "shortBio": "Northern Disconnection is a band on a mission to bring the great Bay Area tradition of improvisational americana in new directions and to new generations. Northern Disconnection's sets feature original songs as well as their own take on the music of influences and inspirations including the Grateful Dead, Bob Dylan, Chuck Prophet, and Eric Clapton.",
   "longBio": [
     "Northern Disconnection is a band on a mission to bring the great Bay Area tradition of improvisational americana in new directions and to new generations. The creative forces behind Northern Disconnection take inspiration from the coastal forests of their Northern California home, and strive to transport their audience away from the stress of always-online modern life for a few hours each show. The band's sonic melting pot incorporates sounds from psychedelic rock, folk, blues, and jazz. Northern Disconnection's sets feature original songs as well as their own take on the music of various influences and inspirations, including the Grateful Dead, Bob Dylan, Chuck Prophet, and Eric Clapton.",
-    "The band also organizes G-Fest, a benefit concert in Petaluma for the Georgia Riley Pellkofer Foundation that raised over $100,000 across 2025 and 2026. At G-Fest 2026, Northern Disconnection played direct support for Radshap Allstars, featuring Scott Law (Phil Lesh & Friends) and Brian Rashap and Danny Eisenberg (the Mother Hips). Other stops include Kilowatt in San Francisco, The Big Easy in Petaluma and The Forestville Club, and the band has appeared on KRCB 104.9 FM's The Morning Show with Brian Griffith alongside Brian Rashap."
+    "The band is also the host artist of G-Fest, a benefit concert in Petaluma for the Georgia Riley Pellkofer Foundation that raised over $100,000 across 2025 and 2026. At G-Fest 2026, Northern Disconnection opened for Radshap Allstars, featuring Scott Law (Phil Lesh & Friends), Brian Rashap and Danny Eisenberg (the Mother Hips) and Danny Luehring (Danny's Live Dead). Other stops include Kilowatt in San Francisco, The Big Easy in Petaluma and The Forestville Club, and the band has appeared on KRCB 104.9 FM's The Morning Show with Brian Griffith alongside Brian Rashap."
   ],
   "forFansOf": ["Grateful Dead", "Warren Zevon", "Zero", "Chuck Prophet", "The Allman Brothers Band"],
   "seoGenres": ["Americana", "Psychedelic Rock", "Jam Band", "Roots Rock", "Blues", "Folk Rock"],
   "highlights": [
     {
-      "title": "Direct support for Radshap Allstars",
-      "detail": "G-Fest 2026, with Scott Law (Phil Lesh & Friends) and Brian Rashap and Danny Eisenberg (the Mother Hips)"
+      "title": "Opened for Radshap Allstars",
+      "detail": "G-Fest 2026, with Scott Law (Phil Lesh & Friends), Brian Rashap and Danny Eisenberg (the Mother Hips) and Danny Luehring (Danny's Live Dead)"
     },
     {
       "title": "KRCB 104.9 FM",
       "detail": "The Morning Show with Brian Griffith, alongside Brian Rashap of the Mother Hips"
     },
     {
-      "title": "Organizers of G-Fest",
+      "title": "Host artist of G-Fest",
       "detail": "A Petaluma benefit for the Georgia Riley Pellkofer Foundation that raised over $100,000 across 2025 and 2026"
     }
   ],
@@ -35,7 +35,7 @@
     "email": "booking@northerndisconnection.com",
     "lineup": "Full four-piece band or acoustic duo",
     "sets": "Comfortable playing sets of any length, from 45 minutes to four hours",
-    "tech": "Self-sufficient: can bring PA, mixer, mics, monitors and a sound engineer"
+    "tech": "Self-sufficient; can bring PA, mixer, mics, monitors and a sound engineer if needed"
   },
   "inputList": [
     { "ch": 1, "source": "Kick", "input": "Mic" },

@@ -18,9 +18,6 @@ interface PressIntroProps {
 // sound: playing from the top with sound; the page is held on the video.
 type Mode = 'preview' | 'sound'
 
-/** Window event that other components dispatch to restart the promo with sound. */
-export const REPLAY_EVENT = 'press:replay'
-
 const UI_IDLE_MS = 2500
 
 function prefersReducedMotion() {
@@ -169,11 +166,6 @@ export default function PressIntro({ poster, hd, sd, durationLabel, targetId }: 
     })
   }, [hd, sd])
 
-  useEffect(() => {
-    window.addEventListener(REPLAY_EVENT, playWithSound)
-    return () => window.removeEventListener(REPLAY_EVENT, playWithSound)
-  }, [playWithSound])
-
   // While the promo plays with sound, any attempt to move on skips to the kit.
   useEffect(() => {
     if (mode !== 'sound') return
@@ -287,13 +279,14 @@ export default function PressIntro({ poster, hd, sd, durationLabel, targetId }: 
           )}
         </button>
       ) : (
-        <button type="button" className="press-intro__surface press-intro__prompt" onClick={playWithSound}>
+        <button
+          type="button"
+          className="press-intro__surface press-intro__prompt"
+          onClick={playWithSound}
+          aria-label={`Play the promo with sound (${durationLabel})`}
+        >
           <span className="press-intro__disc">
             <Play size={34} fill="currentColor" />
-          </span>
-          <span className="press-intro__label">
-            Play with sound
-            <span className="press-intro__time">{durationLabel}</span>
           </span>
         </button>
       )}
