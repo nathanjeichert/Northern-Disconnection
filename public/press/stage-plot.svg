@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" role="img" aria-labelledby="sp-title sp-desc">
+  <title id="sp-title">Northern Disconnection example stage plot</title>
+  <desc id="sp-desc">Drums upstage center with kick, snare and two overhead mics, a monitor to the drummer's left. Guitar amp with a mic upstage left, bass rig on a mono DI upstage right. Downstage from left to right: keys on a stereo DI with a vocal mic and monitor 1, guitar with a vocal mic and monitor 2, bass with a vocal mic and monitor 3.</desc>
+  <rect width="720" height="540" fill="#efe6cf"/>
+  <rect x="10" y="10" width="700" height="520" fill="none" stroke="#1f2e25" stroke-opacity="0.35" stroke-width="1"/>
+
+  <!-- title -->
+  <text x="30" y="44" fill="#7a2230" style="font-family: var(--font-body, 'Alegreya Sans'), 'Gill Sans', Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 3px">EXAMPLE STAGE PLOT</text>
+  <text x="30" y="70" fill="#1f2e25" style="font-family: var(--font-display, 'Fraunces'), Georgia, serif; font-size: 22px; font-weight: 600">Northern Disconnection</text>
+
+  <g fill="#1f2e25" stroke="#1f2e25" stroke-width="1.5" style="font-family: var(--font-body, 'Alegreya Sans'), 'Gill Sans', Arial, sans-serif">
+    <!-- drums -->
+    <text x="360" y="92" text-anchor="middle" stroke="none" style="font-size: 15px; font-weight: 700; letter-spacing: 1px">DRUMS</text>
+    <rect x="322" y="166" width="88" height="80" rx="12" fill="#d4ddc6"/>
+    <circle cx="318" cy="140" r="32" fill="#d4ddc6"/>
+    <circle cx="396" cy="132" r="30" fill="#d4ddc6"/>
+    <circle cx="346" cy="194" r="28" fill="#d4ddc6"/>
+    <circle cx="402" cy="200" r="28" fill="#d4ddc6"/>
+    <rect x="434" y="118" width="54" height="26" fill="#f1d27f"/>
+    <text x="461" y="135" text-anchor="middle" stroke="none" style="font-size: 11px">Snare mic</text>
+    <circle cx="290" cy="196" r="17" fill="#f1d27f"/>
+    <text x="290" y="194" text-anchor="middle" stroke="none" style="font-size: 10px">OH</text>
+    <text x="290" y="205" text-anchor="middle" stroke="none" style="font-size: 10px">mic</text>
+    <circle cx="442" cy="238" r="17" fill="#f1d27f"/>
+    <text x="442" y="236" text-anchor="middle" stroke="none" style="font-size: 10px">OH</text>
+    <text x="442" y="247" text-anchor="middle" stroke="none" style="font-size: 10px">mic</text>
+    <rect x="339" y="258" width="54" height="22" fill="#f1d27f"/>
+    <text x="366" y="273" text-anchor="middle" stroke="none" style="font-size: 11px">Kick mic</text>
+
+    <!-- monitor 4 (drums) -->
+    <rect x="540" y="62" width="44" height="92" fill="#e6c9a3"/>
+    <text transform="translate(567 108) rotate(-90)" text-anchor="middle" stroke="none" style="font-size: 13px">Monitor 4</text>
+
+    <!-- guitar amp -->
+    <rect x="170" y="206" width="84" height="50" fill="#c9d6dc"/>
+    <text x="212" y="236" text-anchor="middle" stroke="none" style="font-size: 13px; font-weight: 700">Guitar amp</text>
+    <rect x="186" y="266" width="52" height="22" fill="#f1d27f"/>
+    <text x="212" y="281" text-anchor="middle" stroke="none" style="font-size: 11px">Amp mic</text>
+
+    <!-- bass rig -->
+    <rect x="528" y="206" width="104" height="50" fill="#c9d6dc"/>
+    <text x="580" y="228" text-anchor="middle" stroke="none" style="font-size: 13px; font-weight: 700">Bass rig</text>
+    <text x="580" y="245" text-anchor="middle" stroke="none" style="font-size: 11px">Mono DI</text>
+
+    <!-- keys position -->
+    <text x="150" y="360" text-anchor="middle" stroke="none" style="font-size: 15px; font-weight: 700; letter-spacing: 1px">KEYS</text>
+    <rect x="30" y="300" width="44" height="88" fill="#e6c9a3"/>
+    <text transform="translate(57 344) rotate(-90)" text-anchor="middle" stroke="none" style="font-size: 13px">Monitor 1</text>
+    <rect x="96" y="410" width="128" height="36" fill="#c9d6dc"/>
+    <text x="160" y="433" text-anchor="middle" stroke="none" style="font-size: 13px">Keys · stereo DI</text>
+    <circle cx="62" cy="428" r="18" fill="#f1d27f"/>
+    <text x="62" y="432" text-anchor="middle" stroke="none" style="font-size: 10px">Vocal</text>
+
+    <!-- guitar position -->
+    <text x="360" y="360" text-anchor="middle" stroke="none" style="font-size: 15px; font-weight: 700; letter-spacing: 1px">GUITAR</text>
+    <circle cx="360" cy="390" r="18" fill="#f1d27f"/>
+    <text x="360" y="394" text-anchor="middle" stroke="none" style="font-size: 10px">Vocal</text>
+    <rect x="312" y="416" width="96" height="48" fill="#e6c9a3"/>
+    <text x="360" y="445" text-anchor="middle" stroke="none" style="font-size: 13px">Monitor 2</text>
+
+    <!-- bass position -->
+    <text x="580" y="360" text-anchor="middle" stroke="none" style="font-size: 15px; font-weight: 700; letter-spacing: 1px">BASS</text>
+    <circle cx="580" cy="390" r="18" fill="#f1d27f"/>
+    <text x="580" y="394" text-anchor="middle" stroke="none" style="font-size: 10px">Vocal</text>
+    <rect x="532" y="416" width="96" height="48" fill="#e6c9a3"/>
+    <text x="580" y="445" text-anchor="middle" stroke="none" style="font-size: 13px">Monitor 3</text>
+
+    <!-- audience -->
+    <rect x="160" y="494" width="400" height="20" fill="#d8d2c2"/>
+    <text x="360" y="508" text-anchor="middle" stroke="none" style="font-size: 12px; font-weight: 700; letter-spacing: 3px">AUDIENCE</text>
+  </g>
+</svg>

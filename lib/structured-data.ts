@@ -16,7 +16,7 @@ export const musicGroupJsonLd = {
   logo: `${baseUrl}/northern-disconnection-logo.svg`,
   description:
     'Northern Disconnection plays psychedelic americana around the San Francisco Bay Area — original songs alongside the music of the Grateful Dead, CSNY, and Steely Dan.',
-  genre: ['Psychedelic Rock', 'Americana', 'Jam Band'],
+  genre: ['Psychedelic Rock', 'Americana', 'Jam Band', 'Roots Rock', 'Blues', 'Folk Rock'],
   foundingLocation: {
     '@type': 'Place',
     name: 'Sonoma County, California',
