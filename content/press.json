@@ -1,0 +1,82 @@
+{
+  "tagline": "Psychedelic Americana from Sonoma County, California",
+  "shortBio": "Northern Disconnection is a band on a mission to bring the great Bay Area tradition of improvisational americana in new directions and to new generations. Northern Disconnection's sets feature original songs as well as their own take on the music of influences and inspirations including the Grateful Dead, Bob Dylan, Chuck Prophet, and Eric Clapton.",
+  "longBio": [
+    "Northern Disconnection is a band on a mission to bring the great Bay Area tradition of improvisational americana in new directions and to new generations. The creative forces behind Northern Disconnection take inspiration from the coastal forests of their Northern California home, and strive to transport their audience away from the stress of always-online modern life for a few hours each show. The band's sonic melting pot incorporates sounds from psychedelic rock, folk, blues, and jazz. Northern Disconnection's sets feature original songs as well as their own take on the music of various influences and inspirations, including the Grateful Dead, Bob Dylan, Chuck Prophet, and Eric Clapton.",
+    "The band also organizes G-Fest, a benefit concert in Petaluma for the Georgia Riley Pellkofer Foundation that raised over $100,000 across 2025 and 2026. At G-Fest 2026, Northern Disconnection played direct support for Radshap Allstars, featuring Scott Law (Phil Lesh & Friends) and Brian Rashap and Danny Eisenberg (the Mother Hips). Other stops include Kilowatt in San Francisco, The Big Easy in Petaluma and The Forestville Club, and the band has appeared on KRCB 104.9 FM's The Morning Show with Brian Griffith alongside Brian Rashap."
+  ],
+  "forFansOf": ["Grateful Dead", "Warren Zevon", "Zero", "Chuck Prophet", "The Allman Brothers Band"],
+  "seoGenres": ["Americana", "Psychedelic Rock", "Jam Band", "Roots Rock", "Blues", "Folk Rock"],
+  "highlights": [
+    {
+      "title": "Direct support for Radshap Allstars",
+      "detail": "G-Fest 2026, with Scott Law (Phil Lesh & Friends) and Brian Rashap and Danny Eisenberg (the Mother Hips)"
+    },
+    {
+      "title": "KRCB 104.9 FM",
+      "detail": "The Morning Show with Brian Griffith, alongside Brian Rashap of the Mother Hips"
+    },
+    {
+      "title": "Organizers of G-Fest",
+      "detail": "A Petaluma benefit for the Georgia Riley Pellkofer Foundation that raised over $100,000 across 2025 and 2026"
+    }
+  ],
+  "venues": [
+    { "name": "Kilowatt", "city": "San Francisco" },
+    { "name": "The Big Easy", "city": "Petaluma" },
+    { "name": "The Forestville Club", "city": "Forestville" },
+    { "name": "G-Fest", "city": "Petaluma" },
+    { "name": "McKay's Taphouse & Beer Garden", "city": "Pleasanton" },
+    { "name": "Brisbane Inn Lodge", "city": "Brisbane" },
+    { "name": "Casino Bar", "city": "Bodega" },
+    { "name": "Gale's Central Club", "city": "Petaluma" }
+  ],
+  "booking": {
+    "email": "booking@northerndisconnection.com",
+    "lineup": "Full four-piece band or acoustic duo",
+    "sets": "Comfortable playing sets of any length, from 45 minutes to four hours",
+    "tech": "Self-sufficient: can bring PA, mixer, mics, monitors and a sound engineer"
+  },
+  "inputList": [
+    { "ch": 1, "source": "Kick", "input": "Mic" },
+    { "ch": 2, "source": "Snare", "input": "Mic" },
+    { "ch": 3, "source": "Overhead L", "input": "Mic" },
+    { "ch": 4, "source": "Overhead R", "input": "Mic" },
+    { "ch": 5, "source": "Bass", "input": "DI (mono)" },
+    { "ch": 6, "source": "Guitar amp", "input": "Mic" },
+    { "ch": 7, "source": "Keys L", "input": "DI (stereo)" },
+    { "ch": 8, "source": "Keys R", "input": "DI (stereo)" },
+    { "ch": 9, "source": "Vocal (keys)", "input": "Mic" },
+    { "ch": 10, "source": "Vocal (guitar)", "input": "Mic" },
+    { "ch": 11, "source": "Vocal (bass)", "input": "Mic" }
+  ],
+  "monitorMixes": 4,
+  "tape": {
+    "identifier": "ND2026-09-19",
+    "title": "Live at G-Fest 2026",
+    "tracks": [
+      { "title": "Nighttime in the Switching Yard", "file": "nd2026-09-19_01_nighttime_in_the_switching_yard.mp3", "seconds": 328, "original": false },
+      { "title": "Sugaree", "file": "nd2026-09-19_02_sugaree.mp3", "seconds": 815, "original": false },
+      { "title": "Wheel Ruts", "file": "nd2026-09-19_04_wheel_ruts.mp3", "seconds": 486, "original": true },
+      { "title": "Marlowe", "file": "nd2026-09-19_06_marlowe.mp3", "seconds": 603, "original": true },
+      { "title": "Through This Struggle", "file": "nd2026-09-19_11_through_this_struggle.mp3", "seconds": 423, "original": true }
+    ]
+  },
+  "photos": [
+    { "file": "/press/photos/northern-disconnection-live-g-fest.jpg", "alt": "Northern Disconnection performing as a full band on a riverside festival stage at G-Fest", "width": 1744, "height": 902, "lead": true },
+    { "file": "/press/photos/northern-disconnection-grass.jpg", "alt": "Two band members on a lawn with a red Nord keyboard", "width": 3013, "height": 3605 },
+    { "file": "/press/photos/northern-disconnection-guitar-g-fest.jpg", "alt": "Guitarist in a flat cap and sunglasses playing a wooden electric guitar at G-Fest", "width": 1500, "height": 791 }
+  ],
+  "downloads": [
+    { "label": "One-sheet", "file": "/press/northern-disconnection-one-sheet.pdf", "kind": "PDF" },
+    { "label": "Press photos", "file": "/press/northern-disconnection-photos.zip", "kind": "ZIP" },
+    { "label": "Logos", "file": "/press/northern-disconnection-logos.zip", "kind": "ZIP" },
+    { "label": "Tech rider & stage plot", "file": "/press/northern-disconnection-tech-rider.pdf", "kind": "PDF" }
+  ],
+  "links": [
+    { "label": "Website", "url": "https://northerndisconnection.com" },
+    { "label": "Instagram", "url": "https://www.instagram.com/northerndisconnection" },
+    { "label": "YouTube", "url": "https://www.youtube.com/channel/UCOpZMRlcndhoCcN1knIHIHA" },
+    { "label": "Live Music Archive", "url": "https://archive.org/details/NorthernDisconnection" }
+  ]
+}

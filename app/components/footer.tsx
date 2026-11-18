@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Instagram, Youtube } from 'lucide-react'
 
@@ -16,6 +17,14 @@ export default function Footer() {
         >
           {BOOKING_EMAIL}
         </a>
+        <p className="mt-3">
+          <Link
+            href="/press"
+            className="text-xs font-bold uppercase tracking-[0.2em] text-rust transition-colors hover:text-gold"
+          >
+            Press kit
+          </Link>
+        </p>
         <div className="mt-6 flex justify-center space-x-3">
           <motion.a
             whileHover={{ scale: 1.1, rotate: 5 }}
