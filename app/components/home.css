@@ -16,7 +16,7 @@
   width: min(100%, 43rem);
   margin: 0 auto;
   container-type: inline-size;
-  animation: hero-rise 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s both;
+  animation: hero-rise 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.15s both;
 }
 
 /* the line under the wordmark, set on a strip of ink like a poster's
@@ -72,7 +72,7 @@
   width: min(92%, 21rem);
   transform: rotate(-1.2deg) translate3d(calc(var(--world-sway) / 5), 0, 0);
   transition: transform 0.3s cubic-bezier(0.3, 1.5, 0.5, 1), box-shadow 0.3s ease;
-  animation: hero-rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) 1.2s both;
+  animation: hero-rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.8s both;
 }
 
 .notice:hover {
@@ -174,13 +174,107 @@
   }
 }
 
+/* ---- a postcard from the road, and a few words ---- */
+
+.welcome {
+  position: relative;
+  display: grid;
+  gap: 2.5rem;
+  align-items: center;
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: clamp(4rem, 13vh, 8rem) 1.25rem 0;
+}
+
+.postcard {
+  width: min(100%, 38rem);
+  margin: 0 auto;
+  border: 12px solid var(--paper);
+  border-bottom-width: 0;
+  background: var(--paper);
+  box-shadow: 10px 10px 0 rgba(5, 14, 10, 0.55);
+  transform: rotate(-1.6deg);
+  transition: transform 0.45s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.postcard:hover {
+  transform: rotate(-0.3deg) scale(1.015);
+}
+
+.postcard img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.postcard figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.2rem 1rem;
+  padding: 0.7rem 0.2rem 0.75rem;
+  color: var(--ink);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  text-transform: uppercase;
+}
+
+.postcard figcaption b {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.postcard figcaption span {
+  font-size: 0.74rem;
+  letter-spacing: 0.24em;
+  color: var(--redwood);
+}
+
+.welcome__words {
+  width: min(100%, 30rem);
+  margin: 0 auto;
+  padding: clamp(1.6rem, 4vw, 2.4rem);
+}
+
+.welcome__words h2 {
+  margin: 0.3rem 0 0.9rem;
+  font-size: clamp(2rem, 5.6vw, 2.9rem);
+}
+
+.welcome__words p:not(.eyebrow) {
+  font-size: 1.1rem;
+  line-height: 1.55;
+}
+
+.welcome__words p + p {
+  margin-top: 0.7rem;
+}
+
+.welcome__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .welcome {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+    gap: 3.5rem;
+  }
+  .welcome__words {
+    margin-top: 3rem;
+  }
+}
+
 /* ---- latest video, down on the forest floor ---- */
 
 .reel {
   position: relative;
   max-width: 60rem;
   margin: 0 auto;
-  padding: clamp(5rem, 16vh, 9rem) 1.25rem 5rem;
+  padding: clamp(4rem, 12vh, 7rem) 1.25rem 5rem;
 }
 
 .reel__frame {

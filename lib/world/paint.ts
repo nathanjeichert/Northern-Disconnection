@@ -702,6 +702,17 @@ function bird(ctx: Ctx, w: number, h: number, up: boolean) {
   ctx.stroke()
 }
 
+/** A banana slug, heading left. */
+function slug(ctx: Ctx, w: number, h: number) {
+  blob(ctx, [[w * 0.06, h * 0.62], [w * 0.14, h * 0.4], [w * 0.4, h * 0.34], [w * 0.7, h * 0.44], [w * 0.97, h * 0.86], [w * 0.7, h * 0.94], [w * 0.2, h * 0.94], [w * 0.05, h * 0.86]], BASE)
+  blob(ctx, [[w * 0.3, h * 0.4], [w * 0.52, h * 0.36], [w * 0.66, h * 0.5], [w * 0.5, h * 0.6], [w * 0.32, h * 0.56]], LIGHT)
+  for (const [x, y] of [[0.36, 0.72], [0.5, 0.78], [0.64, 0.74], [0.24, 0.76], [0.78, 0.82]]) ellipse(ctx, w * x, h * y, w * 0.018, h * 0.04, SHADE)
+  line(ctx, w * 0.1, h * 0.5, w * 0.04, h * 0.14, h * 0.07, BASE)
+  line(ctx, w * 0.15, h * 0.46, w * 0.13, h * 0.1, h * 0.07, BASE)
+  ellipse(ctx, w * 0.04, h * 0.12, w * 0.016, h * 0.05, SHADE)
+  ellipse(ctx, w * 0.13, h * 0.08, w * 0.016, h * 0.05, SHADE)
+}
+
 /** A black-tailed buck, standing broadside with its head up. */
 function deer(ctx: Ctx, w: number, h: number) {
   const gy = h * 0.98
@@ -751,7 +762,7 @@ export type TexName =
   | 'log' | 'shroom0' | 'shroom1' | 'owl'
   | 'tent' | 'canoe' | 'reeds'
   | 'tower' | 'rock0' | 'rock1'
-  | 'birdUp' | 'birdDown' | 'deer'
+  | 'birdUp' | 'birdDown' | 'deer' | 'slug'
 
 interface Sheet {
   name: TexName
@@ -797,6 +808,7 @@ export const SHEETS: Sheet[] = [
   { name: 'birdUp', w: 64, h: 32, paint: (c, w, h) => bird(c, w, h, true) },
   { name: 'birdDown', w: 64, h: 32, paint: (c, w, h) => bird(c, w, h, false) },
   { name: 'deer', w: 256, h: 256, paint: deer },
+  { name: 'slug', w: 128, h: 48, paint: slug },
 ]
 
 /** Paint one sheet at `scale` (0.5 on small screens) and return its canvas. */

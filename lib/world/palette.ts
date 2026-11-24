@@ -98,7 +98,7 @@ export const PAINT: PlacePaint[] = [
     rings: 1,
     stars: 0,
     moon: 0,
-    clouds: 0.9,
+    clouds: 0.5,
     ridgeBase: [0.2, 0.135, 0.08, 0.04],
     ridgeAmp: [0.11, 0.085, 0.06, 0.045],
     ridgeSerr: [0, 0, 0.005, 0.01],

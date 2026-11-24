@@ -134,6 +134,19 @@ void main() {
       float star = sqrt(abs(f2.x)) + sqrt(abs(f2.y));
       col = mix(col, u_sunCol, (1.0 - smoothstep(sqrt(rr) - 0.03, sqrt(rr) + 0.03, star)) * u_fx.y);
     }
+    // now and then, a shooting star
+    float cyc = u_t / 13.0;
+    float sn = floor(cyc);
+    float sp = fract(cyc) / 0.07;
+    if (sp < 1.0) {
+      vec2 from = vec2((h11(sn * 3.1 + 0.5) - 0.5) * aspect * 0.8, u_hy + 0.3 + 0.18 * h11(sn * 7.7));
+      vec2 dir = normalize(vec2(h11(sn * 5.3) > 0.5 ? 0.85 : -0.85, -0.42));
+      float tail = 0.11;
+      vec2 pa = p - (from + dir * sp * 0.3);
+      float along = clamp(dot(pa, -dir) / tail, 0.0, 1.0);
+      float d = length(pa + dir * tail * along);
+      col = mix(col, u_sunCol, (1.0 - smoothstep(0.001, 0.0028, d)) * (1.0 - along) * sin(sp * 3.14159) * u_fx.y);
+    }
   }
 
   // clouds: stacked rounded bars, drifting

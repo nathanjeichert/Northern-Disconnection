@@ -22,11 +22,11 @@ type Pt = [number, number]
 
 /** Stop positions, in percent of the sheet: [wide x, wide y, tall x, tall y]. */
 const STOPS: [number, number, number, number][] = [
-  [14, 73, 27, 25],
-  [34, 46, 71, 37],
-  [54, 71, 30, 51],
-  [72, 43, 70, 65],
-  [89, 27, 36, 79],
+  [14, 73, 27, 24],
+  [34, 46, 71, 35],
+  [54, 71, 30, 47.5],
+  [72, 43, 70, 60],
+  [89, 27, 36, 72.5],
 ]
 
 /** Smooth path through points (Catmull-Rom → cubic Béziers). */

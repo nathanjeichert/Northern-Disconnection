@@ -146,8 +146,16 @@ body {
   position: absolute;
   inset: 0;
   z-index: 0;
-  overflow: clip;
+  /* `clip` keeps the canvas sticky; where it isn't supported the canvas
+     simply scrolls away with the first screen */
+  overflow: hidden;
   pointer-events: none;
+}
+
+@supports (overflow: clip) {
+  .world {
+    overflow: clip;
+  }
 }
 
 /* Taller than the screen: it scrolls with the page for the first 60% of a
@@ -231,7 +239,7 @@ html[data-leaving] .page {
 }
 
 .page-enter {
-  animation: page-arrive 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.55s both;
+  animation: page-arrive 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -485,6 +493,26 @@ html[data-leaving] .page {
 /* …and in pine ink, for paper */
 .logo-ink {
   filter: brightness(0) invert(0.1) sepia(0.6) hue-rotate(90deg);
+}
+
+/* Keyboard users can jump the trail tags */
+.skip-link {
+  position: fixed;
+  left: calc(var(--frame) + 14px);
+  top: calc(var(--frame) + 12px);
+  z-index: 70;
+  padding: 0.6rem 1rem;
+  background: var(--gold);
+  color: var(--ink);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: translateY(-300%);
+}
+
+.skip-link:focus {
+  transform: none;
 }
 
 a:focus-visible,

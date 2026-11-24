@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getShowsContent } from '@/lib/content'
 import { sortShowsByDate, findNextShowIndex, upcomingOnly } from '@/lib/dates'
 import { withPreviewShows } from '@/lib/preview'
+import press from '@/content/press.json'
 import HomeClient from './components/home-client'
 
 export const metadata: Metadata = {
@@ -17,5 +18,8 @@ export default function Page() {
   const nextIndex = findNextShowIndex(shows)
   const nextShow = nextIndex >= 0 ? shows[nextIndex] : null
 
-  return <HomeClient nextShow={nextShow} sample={sample} />
+  // the first sentence of the press bio introduces the band on the postcard
+  const intro = press.shortBio.split(/(?<=\.)\s/)[0]
+
+  return <HomeClient nextShow={nextShow} sample={sample} intro={intro} />
 }

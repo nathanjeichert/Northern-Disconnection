@@ -94,11 +94,14 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(musicGroupJsonLd) }}
         />
+        <a href="#content" className="skip-link">
+          Skip to content
+        </a>
         <WorldCanvas />
         <MotionProvider>
           <TrailChrome />
           <div className="page">
-            <main>{children}</main>
+            <main id="content">{children}</main>
             <Footer />
           </div>
         </MotionProvider>

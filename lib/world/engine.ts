@@ -59,6 +59,7 @@ const ANIM_BIRD = 4
 const ANIM_SHAFT = 5
 const ANIM_FLICKER = 6
 const ANIM_PULSE = 7
+const ANIM_CRAWL = 8
 
 interface Item {
   kind: number
@@ -369,6 +370,8 @@ function buildScene(tex: Record<TexName, number>, dense: boolean) {
         anim: ANIM_PULSE,
       })
     }
+    // a banana slug, taking the whole night to cross the trail
+    add({ kind: SPRITE, z: z2 + 5.6, off: 0, w: 0.42, h: 0.16, ay: 0.08, tex: tex.slug, tone: TONE_CUSTOM, col: [hex('#eccb3f'), hex('#8a6a16'), hex('#fff6c2')], anim: ANIM_CRAWL, scaled: false })
     add({ kind: SPRITE, z: z2 + 4.3, frame: { side: -1, d: 4.3, place: 2, inward: 0.3 }, y: 2.56, w: 0.46, h: 0.69, shrink: 0.6, ay: 0.03, tex: tex.owl, tone: TONE_CUSTOM, col: [hex('#5a4a7a'), hex('#231a3c'), hex('#f6e9a8')] })
     for (let k = 0; k < 5; k++) {
       add({ kind: SPRITE, z: z2 + R(5, 15), off: R(-5, 3), y: -0.2, w: R(1.2, 2.4), h: 13, ay: 0, tex: tex.shaft, tone: TONE_SHAFT, soft: 1, alpha: 0.2, rot: R(0.16, 0.3), anim: ANIM_SHAFT, scaled: false })
@@ -558,7 +561,12 @@ export function createWorld(canvas: HTMLCanvasElement, opts: WorldOptions): Worl
   let slow = 0
   let frames = 0
   let lastSwayCss = 1e9
+  let swayCount = 0
+  const swayTargets = document.getElementsByClassName('world-sway')
   let audioSm = 0
+  /** Extra distance walked by scrolling past the first screen. */
+  let stroll = 0
+  let strollTarget = 0
   const scratch = {} as Mixed
 
   const textures: WebGLTexture[] = []
@@ -641,7 +649,7 @@ export function createWorld(canvas: HTMLCanvasElement, opts: WorldOptions): Worl
     if (!scene) return
     const camT = cur
     const introEase = 1 - Math.pow(1 - intro, 3)
-    const camZ = camT * SPACING - (1 - introEase) * 9
+    const camZ = camT * SPACING - (1 - introEase) * 9 + stroll
     const bob = Math.sin(camZ * 1.5) * 0.045 * clamp(speed / 28)
     const camX = pathX(camZ) + swayX
     const camY = CAM_H + bob
@@ -732,7 +740,8 @@ export function createWorld(canvas: HTMLCanvasElement, opts: WorldOptions): Worl
       const dz = it.z - camZ
       const fogEnd = pt.fogEnd * it.far
       if (dz < NEAR || dz > fogEnd) continue
-      const sx = (it.x - camX) / dz
+      let sx = (it.x - camX) / dz
+      if (it.anim === ANIM_CRAWL) sx += ((((time * 0.012 + it.phase) % 2.4) + 2.4) % 2.4 - 1.2) / dz
       const fog = Math.pow(smooth(pt.fogStart, fogEnd, dz), 0.85)
       let alpha = it.alpha * (1 - smooth(fogEnd * 0.8, fogEnd, dz)) * smooth(NEAR, NEAR + 0.85, dz)
       if (alpha < 0.01) continue
@@ -874,11 +883,13 @@ export function createWorld(canvas: HTMLCanvasElement, opts: WorldOptions): Worl
     gl.uniform3f(grainP.u.u_paper, 0.95, 0.92, 0.84)
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
-    // let the page lean with the camera
+    // let things standing in the scene (the signpost, the notice) lean with
+    // the camera; only they carry the variable, so nothing else restyles
     const css = -swayX * (vhPx / scale)
-    if (Math.abs(css - lastSwayCss) > 0.05) {
+    if (Math.abs(css - lastSwayCss) > 0.05 || swayTargets.length !== swayCount) {
       lastSwayCss = css
-      document.documentElement.style.setProperty('--world-sway', css.toFixed(2) + 'px')
+      swayCount = swayTargets.length
+      for (let i = 0; i < swayTargets.length; i++) (swayTargets[i] as HTMLElement).style.setProperty('--world-sway', css.toFixed(2) + 'px')
     }
   }
 
@@ -889,9 +900,12 @@ export function createWorld(canvas: HTMLCanvasElement, opts: WorldOptions): Worl
     const dt = Math.min(0.1, (now - prevNow) / 1000)
     prevNow = now
     const travelling = travelDur > 0
-    const active = travelling || intro < 1 || now - lastPointer < 1600 || Math.abs(targetSwayX - swayX) > 0.002
-    // idle scenes tick at half rate
-    if (!active && now - lastFrame < 30) {
+    // past the first screen the canvas holds still on the page, and reading
+    // on down the page walks the camera slowly up the trail
+    strollTarget = travelling ? 0 : Math.min(7, Math.max(0, window.scrollY / Math.max(1, window.innerHeight) - LOCK) * 0.75)
+    const active = travelling || intro < 1 || now - lastPointer < 1600 || Math.abs(targetSwayX - swayX) > 0.002 || Math.abs(strollTarget - stroll) > 0.002
+    // a scene nobody is steering ticks along at about 24 frames a second
+    if (!active && now - lastFrame < 38) {
       schedule()
       return
     }
@@ -919,7 +933,8 @@ export function createWorld(canvas: HTMLCanvasElement, opts: WorldOptions): Worl
     const ease = 1 - Math.exp(-step * 2.6)
     swayX += (targetSwayX - swayX) * ease
     swayY += (targetSwayY - swayY) * ease
-    const z = cur * SPACING
+    stroll += (strollTarget - stroll) * (1 - Math.exp(-step * 4.5))
+    const z = cur * SPACING + stroll
     speed = lerp(speed, Math.abs(z - lastZ) / Math.max(step, 0.001), 0.3)
     lastZ = z
 
@@ -934,6 +949,8 @@ export function createWorld(canvas: HTMLCanvasElement, opts: WorldOptions): Worl
         if (slow > 30 && scaleTrim > 0.55) {
           scaleTrim *= 0.82
           applySize()
+          // resizing clears the canvas — repaint before the browser shows it
+          draw()
         }
         frames = 0
         slow = 0
@@ -964,8 +981,11 @@ export function createWorld(canvas: HTMLCanvasElement, opts: WorldOptions): Worl
     }
   }
   const onResize = () => {
+    const w = canvas.width
+    const h = canvas.height
     resize()
-    still()
+    // resizing clears the canvas — repaint before the browser shows it
+    if (ready && !destroyed && (canvas.width !== w || canvas.height !== h || opts.reducedMotion)) draw()
   }
   const onLost = (e: Event) => {
     e.preventDefault()
@@ -1052,7 +1072,6 @@ export function createWorld(canvas: HTMLCanvasElement, opts: WorldOptions): Worl
       window.removeEventListener('resize', onResize)
       document.removeEventListener('visibilitychange', onVisibility)
       canvas.removeEventListener('webglcontextlost', onLost)
-      document.documentElement.style.removeProperty('--world-sway')
       for (const t of textures) gl.deleteTexture(t)
     },
   }

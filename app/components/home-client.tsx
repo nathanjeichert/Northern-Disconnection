@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
+import { Music, Users } from 'lucide-react'
 import type { Show } from '@/types/content'
 import { getWeekday } from '@/lib/dates'
 import Lockup from './trail/lockup'
@@ -20,6 +22,8 @@ interface HomeClientProps {
   nextShow: Show | null
   /** The show is a stand-in on a preview build (see lib/preview.ts). */
   sample?: boolean
+  /** One-sentence introduction (from the press bio). */
+  intro: string
 }
 
 /*
@@ -27,7 +31,7 @@ interface HomeClientProps {
   dusk sky, a notice for the next show staked in the ferns, and the
   signpost — the site's navigation — standing beside the trail.
 */
-export default function HomeClient({ nextShow, sample }: HomeClientProps) {
+export default function HomeClient({ nextShow, sample, intro }: HomeClientProps) {
   const [latestVideo, setLatestVideo] = useState<LatestVideo | null>(null)
   const [videoError, setVideoError] = useState<string | null>(null)
   const [isLoadingVideo, setIsLoadingVideo] = useState(true)
@@ -73,7 +77,7 @@ export default function HomeClient({ nextShow, sample }: HomeClientProps) {
           </p>
         </div>
 
-        <div className="hero__ground">
+        <div className="hero__ground world-sway">
           {nextShow ? (
             <Link href="/shows" className="notice placard">
               <span className="notice__head">{sample ? 'Next show · sample' : 'Next show'}</span>
@@ -104,6 +108,40 @@ export default function HomeClient({ nextShow, sample }: HomeClientProps) {
           )}
 
           <Signpost />
+        </div>
+      </section>
+
+      {/* ============ POSTCARD ============ */}
+      <section className="welcome">
+        <figure className="postcard">
+          <Image
+            src="/band-photos/gfest-live.jpg"
+            alt="Northern Disconnection performing live on the riverfront stage at G-Fest"
+            width={1744}
+            height={902}
+            sizes="(min-width: 900px) 600px, 92vw"
+          />
+          <figcaption>
+            <b>Live on the river</b>
+            <span>G-Fest · Petaluma, California</span>
+          </figcaption>
+        </figure>
+
+        <div className="welcome__words placard placard--keyline">
+          <p className="eyebrow">Sonoma County, California</p>
+          <h2 className="poster-title">Psychedelic Americana</h2>
+          <p>{intro}</p>
+          <p>Original songs alongside the music of the Grateful Dead, CSNY, and Steely Dan.</p>
+          <div className="welcome__links">
+            <Link href="/music" className="retro-button">
+              <Music size={16} />
+              Listen
+            </Link>
+            <Link href="/about" className="retro-button retro-button--ghost">
+              <Users size={16} />
+              The band
+            </Link>
+          </div>
         </div>
       </section>
 
