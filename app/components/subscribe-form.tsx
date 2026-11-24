@@ -1,8 +1,6 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
-import { motion } from 'framer-motion'
-import { Mail } from 'lucide-react'
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
@@ -10,7 +8,7 @@ interface SubscribeFormProps {
   className?: string
 }
 
-// Compact one-line signup strip: label + email input + button.
+// The trail register: sign it to hear when a show is posted.
 export default function SubscribeForm({ className = '' }: SubscribeFormProps) {
   const [email, setEmail] = useState('')
   const [hp, setHp] = useState('')
@@ -31,7 +29,7 @@ export default function SubscribeForm({ className = '' }: SubscribeFormProps) {
 
       if (response.ok) {
         setStatus('success')
-        setMessage('Thanks for subscribing!')
+        setMessage('You’re on the list. See you out there.')
         setEmail('')
       } else {
         const data = await response.json().catch(() => null)
@@ -45,15 +43,8 @@ export default function SubscribeForm({ className = '' }: SubscribeFormProps) {
   }
 
   return (
-    <div className={`text-center ${className}`}>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3"
-      >
-        <span className="flex items-center gap-2 whitespace-nowrap font-display text-lg text-cream">
-          <Mail size={18} className="shrink-0 text-rust" aria-hidden="true" />
-          Get Show Alerts
-        </span>
+    <div className={className}>
+      <form onSubmit={handleSubmit} className="flex flex-wrap items-stretch gap-3">
         {/* Honeypot: hidden from humans, catches bots that fill every field. */}
         <input
           type="text"
@@ -71,28 +62,20 @@ export default function SubscribeForm({ className = '' }: SubscribeFormProps) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
           aria-label="Email address"
+          autoComplete="email"
           required
           disabled={status === 'loading'}
-          className="w-full min-w-0 max-w-xs flex-1 border-2 border-rust/40 bg-pine/60 px-4 py-2 text-sm text-cream placeholder-sand/50 transition-colors focus:border-gold focus:outline-none disabled:opacity-50 max-sm:basis-full sm:w-auto"
+          className="min-w-0 flex-1 basis-56 border-2 border-ink bg-cream px-4 py-2.5 text-base text-ink placeholder:text-ink/45 focus:border-redwood focus:outline-none disabled:opacity-50"
+          style={{ borderColor: 'var(--ink)' }}
         />
-        <button
-          type="submit"
-          disabled={status === 'loading'}
-          className="retro-button retro-button--sm disabled:opacity-50"
-        >
-          {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
+        <button type="submit" disabled={status === 'loading'} className="retro-button disabled:opacity-50">
+          {status === 'loading' ? 'Signing…' : 'Sign up'}
         </button>
       </form>
 
-      {message && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className={`mt-3 text-sm ${status === 'success' ? 'text-gold' : 'text-rust'}`}
-        >
-          {message}
-        </motion.p>
-      )}
+      <p aria-live="polite" className={`mt-3 min-h-[1.25rem] text-sm ${status === 'error' ? 'text-burgundy' : 'text-redwood'}`}>
+        {message}
+      </p>
     </div>
   )
 }

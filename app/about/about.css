@@ -1,0 +1,80 @@
+/* Base camp: story on paper, photographs tacked up beside it. */
+
+.about-story {
+  display: grid;
+  gap: clamp(3rem, 8vw, 5.5rem);
+}
+
+.about-leaf {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+
+.about-leaf__text {
+  padding: clamp(1.6rem, 4vw, 2.6rem);
+  font-size: 1.18rem;
+  line-height: 1.65;
+}
+
+/* drop cap in poster gothic */
+.about-leaf__text p::first-letter {
+  float: left;
+  margin: 0.04em 0.12em 0 0;
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 700;
+  font-size: 4.3em;
+  line-height: 0.82;
+  color: var(--redwood);
+}
+
+.about-leaf__photo {
+  position: relative;
+  width: min(100%, 24rem);
+  margin: 0 auto;
+  border: 10px solid var(--paper);
+  border-bottom-width: 34px;
+  background: var(--paper);
+  box-shadow: 9px 9px 0 rgba(5, 14, 10, 0.55);
+  transform: rotate(1.6deg);
+  transition: transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.about-leaf[data-flip] .about-leaf__photo {
+  transform: rotate(-1.8deg);
+}
+
+.about-leaf__photo:hover {
+  transform: rotate(0deg) scale(1.02);
+}
+
+/* a tack */
+.about-leaf__photo::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -18px;
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border-radius: 50%;
+  background: var(--redwood);
+  box-shadow: 2px 3px 0 rgba(5, 14, 10, 0.5);
+}
+
+@media (min-width: 820px) {
+  .about-leaf {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 3.5rem;
+  }
+  .about-leaf[data-flip] {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+  .about-leaf[data-flip] .about-leaf__text {
+    order: 2;
+  }
+  .about-leaf__text {
+    margin-top: 2.5rem;
+  }
+}

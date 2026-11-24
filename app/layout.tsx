@@ -1,18 +1,25 @@
 import './global.css'
-import type { Metadata } from 'next'
-import { Fraunces, Alegreya_Sans } from 'next/font/google'
-import { Navbar } from './components/nav'
-import Footer from './components/footer'
+import type { Metadata, Viewport } from 'next'
+import { Oswald, Fraunces, Alegreya_Sans } from 'next/font/google'
+import WorldCanvas from './components/world/world-canvas'
 import MotionProvider from './components/motion-provider'
-import SiteBackdrop from './components/backdrop/site-backdrop'
+import TrailChrome from './components/trail/trail-chrome'
+import Footer from './components/footer'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { baseUrl } from './sitemap'
 import { musicGroupJsonLd } from '@/lib/structured-data'
 
+// Condensed gothic caps: the voice of a WPA park poster.
+const oswald = Oswald({
+  subsets: ['latin'],
+  variable: '--font-poster',
+})
+
 const fraunces = Fraunces({
   subsets: ['latin'],
-  variable: '--font-display',
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
   axes: ['SOFT', 'WONK', 'opsz'],
 })
 
@@ -60,6 +67,14 @@ export const metadata: Metadata = {
   },
 }
 
+export const viewport: Viewport = {
+  themeColor: '#f2e8cf',
+}
+
+// Names the place before first paint, so the stand-in sky and the type on
+// it are already the right inks (the world canvas takes over from there).
+const placeScript = `(function(){var m={shows:'campfire',music:'grove',about:'camp',press:'lookout'};document.documentElement.dataset.place=m[location.pathname.split('/')[1]]||'trailhead'})()`
+
 export default function RootLayout({
   children,
 }: {
@@ -69,24 +84,28 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${fraunces.variable} ${alegreyaSans.variable}`}
+      data-place="trailhead"
+      suppressHydrationWarning
+      className={`${oswald.variable} ${fraunces.variable} ${alegreyaSans.variable}`}
     >
-      <body className="antialiased min-h-screen">
+      <body className="antialiased">
+        <script dangerouslySetInnerHTML={{ __html: placeScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(musicGroupJsonLd) }}
         />
-        <div className="grain-overlay"></div>
-        <SiteBackdrop />
-        <main className="relative z-10">
-          <MotionProvider>
-            <Navbar />
-            {children}
+        <WorldCanvas />
+        <MotionProvider>
+          <TrailChrome />
+          <div className="page">
+            <main>{children}</main>
             <Footer />
-          </MotionProvider>
-          <Analytics />
-          <SpeedInsights />
-        </main>
+          </div>
+        </MotionProvider>
+        <div className="grain-overlay" aria-hidden="true" />
+        <div className="poster-frame" aria-hidden="true" />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

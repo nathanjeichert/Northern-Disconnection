@@ -2,12 +2,17 @@
 
 /*
   Northern Disconnection — design system
-  Vintage handbill meets redwood forest: deep pine greens, parchment
-  cream, warm tan, and marigold, under a film-grain overlay.
+
+  The whole site is one WPA-era park poster of an old redwood forest: a
+  painted world behind every page (lib/world), a cream paper margin around
+  the viewport, and everything else set the way those posters were — flat
+  inks, condensed gothic caps, colour bands, paper placards and routed
+  wooden trail signs.
 */
 
 :root {
-  --pine: #0c2318; /* page base */
+  /* inks */
+  --pine: #0c2318;
   --forest: #355e3b;
   --moss: #1d4030;
   --cream: #f7f2e5;
@@ -17,6 +22,68 @@
   --gold: #e9b949;
   --burgundy: #7a2230;
   --sage: #7d8471;
+  --paper: #f2e8cf;
+  --ink: #10241a;
+  --redwood: #8a3b27;
+  --bark: #4a2016;
+  --ember: #cf7142;
+
+  /* the poster's paper margin */
+  --frame: 10px;
+
+  /* per-place theme — the trailhead's values; see [data-place] below */
+  --place-sky: #27675f;
+  --place-ground: #122d21;
+  --band: #0f2a1d;
+  --sky-ink: var(--cream);
+  --sky-shade: rgba(8, 28, 26, 0.75);
+  --sky-shade-solid: #0b2422;
+  --accent: var(--gold);
+  --world-sway: 0px;
+}
+
+html[data-place='campfire'] {
+  --place-sky: #0f1f37;
+  --place-ground: #071217;
+  --band: #0b1828;
+  --sky-shade: rgba(3, 8, 16, 0.8);
+  --sky-shade-solid: #060d18;
+  --accent: #ffab3d;
+}
+
+html[data-place='grove'] {
+  --place-sky: #1e1945;
+  --place-ground: #0b091d;
+  --band: #15112f;
+  --sky-shade: rgba(8, 5, 24, 0.8);
+  --sky-shade-solid: #0d0920;
+  --accent: #dcf78c;
+}
+
+html[data-place='camp'] {
+  --place-sky: #eca85a;
+  --place-ground: #243f2a;
+  --band: #1b3526;
+  --sky-ink: var(--cream);
+  --sky-shade: rgba(58, 21, 14, 0.8);
+  --sky-shade-solid: #3a150e;
+  --accent: var(--gold);
+}
+
+html[data-place='lookout'] {
+  --place-sky: #7aafba;
+  --place-ground: #27503d;
+  --band: #173a33;
+  --sky-ink: var(--cream);
+  --sky-shade: rgba(14, 44, 44, 0.8);
+  --sky-shade-solid: #0e2c2c;
+  --accent: var(--gold);
+}
+
+@media (max-width: 640px) {
+  :root {
+    --frame: 6px;
+  }
 }
 
 ::selection {
@@ -28,6 +95,7 @@ html {
   min-width: 360px;
   scroll-behavior: smooth;
   color-scheme: dark;
+  background: var(--place-ground);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -42,14 +110,13 @@ body {
 }
 
 body {
-  background-color: var(--pine);
-  background-image:
-    radial-gradient(1100px 600px at 70% -100px, rgba(53, 94, 59, 0.55), transparent 70%),
-    radial-gradient(900px 500px at 10% 10%, rgba(233, 185, 73, 0.07), transparent 65%),
-    radial-gradient(1200px 900px at 50% 120%, rgba(122, 34, 48, 0.18), transparent 70%);
-  background-attachment: fixed;
+  position: relative;
+  min-height: 100vh;
+  min-height: 100lvh;
+  background: var(--place-ground);
   color: var(--sand);
   font-family: var(--font-body), Georgia, serif;
+  transition: background-color 1.2s ease;
 }
 
 /* Custom scrollbar */
@@ -58,37 +125,130 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--pine);
+  background: var(--paper);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--rust);
-  border-radius: 6px;
+  background: var(--redwood);
+  border: 3px solid var(--paper);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--gold);
+  background: var(--bark);
+}
+
+/* ------------------------------------------------------------------ */
+/* The world canvas                                                    */
+/* ------------------------------------------------------------------ */
+
+/* Spans the whole document so its sticky child has room to travel. */
+.world {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: clip;
+  pointer-events: none;
+}
+
+/* Taller than the screen: it scrolls with the page for the first 60% of a
+   screen (so the first view stays registered with whatever is laid out on
+   it), then holds on the forest floor. Keep in step with LOCK in
+   lib/world/engine.ts. */
+.world-sticky {
+  position: sticky;
+  top: -60vh;
+  top: -60lvh;
+  height: 160vh;
+  height: 160lvh;
+  /* stand-in until the first frame: sky over ground, two flat inks */
+  background: linear-gradient(to bottom, var(--place-sky) 0 36%, var(--place-ground) 36% 100%);
+  transition: background 1.2s ease;
+}
+
+.world canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+
+html[data-world='ready'] .world canvas {
+  opacity: 1;
+}
+
+.world canvas[data-lost] {
+  opacity: 0;
+}
+
+/* The poster's paper margin, with a hairline where the print begins. */
+.poster-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  border: var(--frame) solid var(--paper);
+  box-shadow: inset 0 0 0 1.5px rgba(16, 36, 26, 0.5);
 }
 
 /* Film-grain overlay */
 .grain-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   pointer-events: none;
   opacity: 0.05;
-  z-index: 40;
+  z-index: 44;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  /* The SVG has no intrinsic size; without an explicit tile size the single
-     256px noise square stretches to the whole viewport and reads as coarse
-     blotches instead of fine film grain */
   background-repeat: repeat;
   background-size: 256px 256px;
 }
 
-/* Palette utilities */
+/* ------------------------------------------------------------------ */
+/* Pages arrive and leave with the walk                                */
+/* ------------------------------------------------------------------ */
+
+/* No z-index here: a stacking context would trap the flyer maker and other
+   overlays underneath the trail tags and the paper margin. */
+.page {
+  position: relative;
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+html[data-leaving] .page {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@keyframes page-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-enter {
+  animation: page-arrive 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.55s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page,
+  html[data-leaving] .page {
+    transition: none;
+    transform: none;
+  }
+  .page-enter {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Palette utilities                                                   */
+/* ------------------------------------------------------------------ */
+
 .text-cream { color: var(--cream); }
 .text-parchment { color: var(--parchment); }
 .text-rust { color: var(--rust); }
@@ -97,6 +257,9 @@ body {
 .text-burgundy { color: var(--burgundy); }
 .text-sand { color: var(--sand); }
 .text-pine { color: var(--pine); }
+.text-ink { color: var(--ink); }
+.text-redwood { color: var(--redwood); }
+.text-accent { color: var(--accent); }
 
 .bg-pine { background-color: var(--pine); }
 .bg-moss { background-color: var(--moss); }
@@ -108,37 +271,68 @@ body {
 .bg-gold { background-color: var(--gold); }
 .bg-burgundy { background-color: var(--burgundy); }
 .bg-sand { background-color: var(--sand); }
+.bg-paper { background-color: var(--paper); }
+.bg-ink { background-color: var(--ink); }
 
 .border-cream { border-color: var(--cream); }
 .border-rust { border-color: var(--rust); }
 .border-sage { border-color: var(--sage); }
 .border-gold { border-color: var(--gold); }
+.border-ink { border-color: var(--ink); }
 
-/* Display type — vintage poster serif */
+/* ------------------------------------------------------------------ */
+/* Type                                                                */
+/* ------------------------------------------------------------------ */
+
+/* Condensed gothic — the poster's voice */
 .font-display {
-  font-family: var(--font-display), 'Iowan Old Style', Georgia, serif;
-  font-variation-settings: 'SOFT' 60, 'WONK' 1;
-  letter-spacing: 0.005em;
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
-/* Small-caps section label */
-.eyebrow {
-  font-family: var(--font-body), Georgia, serif;
-  text-transform: uppercase;
-  letter-spacing: 0.35em;
-  font-size: 0.75rem;
+.poster-title {
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.035em;
+  line-height: 0.98;
+}
+
+/* Warm serif italic for the quieter lines */
+.font-serif {
+  font-family: var(--font-serif), 'Iowan Old Style', Georgia, serif;
+  font-variation-settings: 'SOFT' 60, 'WONK' 1;
+}
+
+/* Small tracked caps */
+.eyebrow {
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-size: 0.78rem;
+  font-weight: 500;
   color: var(--rust);
 }
 
-/* Letterpress offset shadow for big headings */
-.vintage-shadow {
-  text-shadow:
-    2px 2px 0 rgba(12, 35, 24, 0.9),
-    4px 4px 0 rgba(215, 180, 138, 0.35);
+/* Type set straight onto the sky takes the place's ink */
+.on-sky {
+  color: var(--sky-ink);
+  text-shadow: 0.045em 0.05em 0 var(--sky-shade);
 }
 
-/* Fleuron ornament divider:  ── ❦ ── */
+.on-sky .eyebrow,
+.eyebrow.on-sky {
+  color: var(--sky-ink);
+  opacity: 0.9;
+}
+
+/* Hard offset shadow for big headings */
+.vintage-shadow {
+  text-shadow: 3px 3px 0 rgba(6, 18, 12, 0.85);
+}
+
+/* Rule with the band's mark (or a glyph) in the middle */
 .ornament {
   display: flex;
   align-items: center;
@@ -150,16 +344,71 @@ body {
 .ornament::before,
 .ornament::after {
   content: '';
-  height: 1px;
+  height: 2px;
   width: clamp(48px, 18vw, 160px);
-  background: linear-gradient(to var(--ornament-dir, right), transparent, var(--rust));
-  opacity: 0.6;
+  background: currentColor;
+  opacity: 0.55;
 }
 
-.ornament::before { --ornament-dir: right; }
-.ornament::after { --ornament-dir: left; }
+/* ------------------------------------------------------------------ */
+/* Surfaces                                                            */
+/* ------------------------------------------------------------------ */
 
-/* Poster-style buttons: hard offset shadow, hand-bill energy */
+/* Paper notice: cream stock, pine ink, a keyline inside the edge. */
+.placard {
+  position: relative;
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.24 0 0 0 0 0.12 0 0 0 0.5 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  color: var(--ink);
+  box-shadow: 7px 7px 0 rgba(5, 14, 10, 0.6);
+}
+
+.placard--keyline::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1.5px solid rgba(16, 36, 26, 0.45);
+  pointer-events: none;
+}
+
+.placard .eyebrow {
+  color: var(--redwood);
+}
+
+/* Colour band: the block of solid ink a poster sets its title in. */
+.band {
+  position: relative;
+  background-color: var(--band);
+  color: var(--cream);
+  box-shadow: 7px 7px 0 rgba(5, 14, 10, 0.5);
+  transition: background-color 1.2s ease;
+}
+
+.band--keyline {
+  outline: 1.5px solid rgba(247, 242, 229, 0.4);
+  outline-offset: -8px;
+}
+
+/* Routed wooden trail sign */
+.trail-sign {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  background: var(--redwood);
+  color: var(--cream);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  filter: drop-shadow(4px 4px 0 rgba(5, 14, 10, 0.55));
+}
+
+/* ------------------------------------------------------------------ */
+/* Buttons                                                             */
+/* ------------------------------------------------------------------ */
+
 .retro-button {
   position: relative;
   display: inline-flex;
@@ -169,85 +418,81 @@ body {
   background-color: var(--cream);
   color: var(--pine);
   border: 2px solid var(--cream);
-  padding: 12px 28px;
-  font-family: var(--font-body), Georgia, serif;
-  font-weight: 700;
+  padding: 11px 26px;
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  font-size: 0.875rem;
-  box-shadow: 4px 4px 0 rgba(215, 180, 138, 0.55);
+  font-size: 0.9rem;
+  box-shadow: 4px 4px 0 rgba(5, 14, 10, 0.6);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
 .retro-button:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(215, 180, 138, 0.55);
+  box-shadow: 6px 6px 0 rgba(5, 14, 10, 0.6);
 }
 
 .retro-button:active {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 rgba(215, 180, 138, 0.55);
+  box-shadow: 2px 2px 0 rgba(5, 14, 10, 0.6);
 }
 
 .retro-button--sm {
-  padding: 8px 20px;
-  font-size: 0.75rem;
-  box-shadow: 3px 3px 0 rgba(215, 180, 138, 0.55);
+  padding: 7px 18px;
+  font-size: 0.78rem;
+  box-shadow: 3px 3px 0 rgba(5, 14, 10, 0.6);
 }
 
 .retro-button--ghost {
-  background-color: rgba(12, 35, 24, 0.35);
+  background-color: rgba(12, 35, 24, 0.55);
   color: var(--cream);
   border-color: var(--rust);
-  backdrop-filter: blur(4px);
 }
 
 .retro-button--ghost:hover {
-  background-color: rgba(215, 180, 138, 0.15);
+  background-color: rgba(12, 35, 24, 0.8);
 }
 
-/* Renders the black-ink logo artwork in warm cream (small marks on dark bg) */
+/* on paper the button is inked instead */
+.placard .retro-button {
+  background-color: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+  box-shadow: 4px 4px 0 var(--redwood);
+}
+
+.placard .retro-button:hover {
+  box-shadow: 6px 6px 0 var(--redwood);
+}
+
+.placard .retro-button--ghost {
+  background-color: transparent;
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.placard .retro-button--ghost:hover {
+  background-color: rgba(16, 36, 26, 0.08);
+  box-shadow: none;
+}
+
+/* Renders the black-ink logo artwork in warm cream */
 .logo-cream {
-  filter: brightness(0) invert(0.96) sepia(0.22) drop-shadow(0 6px 28px rgba(0, 0, 0, 0.55));
+  filter: brightness(0) invert(0.96) sepia(0.22);
 }
 
-/* Slow drifting glow behind featured panels */
-@keyframes aurora-drift {
-  0%, 100% { transform: translate3d(-4%, 0, 0) scale(1); opacity: 0.55; }
-  50% { transform: translate3d(4%, -3%, 0) scale(1.08); opacity: 0.8; }
+/* …and in pine ink, for paper */
+.logo-ink {
+  filter: brightness(0) invert(0.1) sepia(0.6) hue-rotate(90deg);
 }
 
-.aurora {
-  animation: aurora-drift 14s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .aurora {
-    animation: none;
-  }
-}
-
-/* Ticket-stub perforation: punch-hole bites where the date-column
-   divider meets the card edges. The divider is the right border of the
-   8rem date column inside the card's 1.5rem padding, so the holes sit
-   at 9.5rem (minus 1px to center on the 2px rule). Masks the card and
-   its hard offset shadow, so the bite carries through both. sm+ only —
-   the divider doesn't exist in the stacked mobile layout. If
-   mask-composite is unsupported the layers union to fully opaque and
-   the card simply renders without bites. */
-@media (min-width: 640px) {
-  .ticket-stub {
-    --punch-r: 0.4rem;
-    --punch-x: calc(9.5rem - 1px);
-    -webkit-mask-image:
-      radial-gradient(circle var(--punch-r) at var(--punch-x) 0, transparent calc(var(--punch-r) - 1px), #000 var(--punch-r)),
-      radial-gradient(circle var(--punch-r) at var(--punch-x) 100%, transparent calc(var(--punch-r) - 1px), #000 var(--punch-r));
-    -webkit-mask-composite: source-in;
-    mask-image:
-      radial-gradient(circle var(--punch-r) at var(--punch-x) 0, transparent calc(var(--punch-r) - 1px), #000 var(--punch-r)),
-      radial-gradient(circle var(--punch-r) at var(--punch-x) 100%, transparent calc(var(--punch-r) - 1px), #000 var(--punch-r));
-    mask-composite: intersect;
-  }
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
 }
 
 /* Remove Safari input shadow on mobile */
@@ -257,3 +502,72 @@ input[type='email'] {
   -moz-appearance: none;
   appearance: none;
 }
+
+/* ------------------------------------------------------------------ */
+/* Inner pages                                                         */
+/* ------------------------------------------------------------------ */
+
+.trail-page {
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 0 1.25rem 5rem;
+}
+
+/* Title block set on the sky */
+.page-head {
+  padding-top: calc(var(--frame) + 5.2rem);
+  margin-bottom: 2.6rem;
+  text-align: center;
+}
+
+.page-head .eyebrow {
+  font-size: 0.82rem;
+}
+
+.page-head .eyebrow span {
+  margin: 0 0.4em;
+  color: var(--accent);
+}
+
+.page-head h1 {
+  margin-top: 0.5rem;
+  font-size: clamp(2.7rem, 9.5vw, 5.4rem);
+  /* an inked outline keeps the title whole wherever it crosses the moon,
+     a bough or a trunk */
+  -webkit-text-stroke: 0.1em var(--sky-shade-solid);
+  paint-order: stroke fill;
+  text-shadow: 0.05em 0.06em 0 var(--sky-shade-solid);
+}
+
+.page-head .eyebrow {
+  display: table;
+  margin: 0 auto;
+  padding: 0.3em 1em 0.34em 1.32em;
+  background: var(--band);
+  color: var(--cream);
+  opacity: 1;
+  text-shadow: none;
+}
+
+/* the line under the title, on a strip of ink */
+.page-head__deck {
+  display: table;
+  max-width: 36rem;
+  margin: 0.8rem auto 0;
+  padding: 0.38em 1.1em 0.44em;
+  background: var(--band);
+  color: var(--cream);
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  line-height: 1.35;
+  text-shadow: none;
+}
+
+@media (max-width: 640px) {
+  .page-head {
+    padding-top: calc(var(--frame) + 4.4rem);
+    margin-bottom: 2rem;
+  }
+}
+

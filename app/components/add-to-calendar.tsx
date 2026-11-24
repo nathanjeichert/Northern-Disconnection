@@ -32,7 +32,7 @@ function downloadIcs(show: Show) {
   show card's CSS mask (the ticket-stub perforation), which would otherwise clip
   the dropdown at the card's edge.
 */
-export default function AddToCalendar({ show }: { show: Show }) {
+export default function AddToCalendar({ show, triggerClassName }: { show: Show; triggerClassName?: string }) {
   const [open, setOpen] = useState(false)
   const [coords, setCoords] = useState({ top: 0, left: 0 })
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -89,7 +89,7 @@ export default function AddToCalendar({ show }: { show: Show }) {
   ]
 
   const itemClass =
-    'block w-full px-4 py-2.5 text-left text-[0.7rem] font-bold uppercase tracking-[0.15em] text-rust transition-colors hover:bg-moss/60 hover:text-cream'
+    'font-display block w-full px-4 py-2.5 text-left text-[0.78rem] uppercase tracking-[0.16em] text-ink transition-colors hover:bg-gold'
 
   return (
     <>
@@ -99,7 +99,7 @@ export default function AddToCalendar({ show }: { show: Show }) {
         onClick={() => setOpen((value) => !value)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="inline-flex items-center gap-1.5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-rust/80 transition-colors hover:text-gold"
+        className={triggerClassName ?? 'inline-flex items-center gap-1.5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-rust/80 transition-colors hover:text-gold'}
       >
         <CalendarPlus size={14} className="shrink-0" />
         Add to Calendar
@@ -112,7 +112,7 @@ export default function AddToCalendar({ show }: { show: Show }) {
             ref={menuRef}
             role="menu"
             style={{ position: 'fixed', top: coords.top, left: coords.left, zIndex: 70 }}
-            className="min-w-[12rem] border-2 border-rust/50 bg-pine shadow-[5px_5px_0_rgba(215,180,138,0.25)]"
+            className="min-w-[12rem] border-2 border-ink bg-paper shadow-[5px_5px_0_rgba(5,14,10,0.6)]"
           >
             {options.map((option) =>
               option.href ? (

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Ornament from './ornament'
+import PageHead from './trail/page-head'
 import LiveTapePlayer from './live-tape-player'
 
 // One Archive.org item per show, newest first. Only the selected tape is
@@ -18,10 +18,9 @@ export default function TapeShelf() {
 
   return (
     <>
-      <header className="mb-12 text-center">
-        <h1 className="font-display vintage-shadow text-5xl text-cream sm:text-6xl">{tape.title}</h1>
-        <p className="mt-4 text-sand/80">{tape.date}</p>
-        <div className="mt-6 flex items-center justify-center gap-2" role="group" aria-label="Choose a live tape">
+      <PageHead place="grove" title={tape.title}>
+        <p className="page-head__deck">{tape.date}</p>
+        <div className="mt-6 flex items-center justify-center gap-3" role="group" aria-label="Choose a live tape">
           {TAPES.map((t) => {
             const active = t.identifier === selected
             return (
@@ -30,17 +29,15 @@ export default function TapeShelf() {
                 type="button"
                 onClick={() => setSelected(t.identifier)}
                 aria-pressed={active}
-                className={`border px-3 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.15em] transition-colors ${
-                  active ? 'border-cream bg-cream text-pine' : 'border-rust/40 text-rust hover:border-rust hover:text-cream'
-                }`}
+                className={`retro-button retro-button--sm ${active ? '' : 'retro-button--ghost'}`}
+                style={{ textShadow: 'none' }}
               >
                 G-Fest {t.year}
               </button>
             )
           })}
         </div>
-        <Ornament className="mt-6" />
-      </header>
+      </PageHead>
 
       {/* Full show — soundboard streamed from the Internet Archive */}
       <LiveTapePlayer key={tape.identifier} identifier={tape.identifier} fallbackTitle={tape.title} />

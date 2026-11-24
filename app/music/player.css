@@ -1,3 +1,8 @@
+/* The deck itself: a solid band of the grove's night ink, edged in tan. */
+.tape-deck {
+  border: 2px solid rgba(215, 180, 138, 0.55);
+}
+
 /* Tape-deck player controls: poster-styled range inputs, transport
    buttons, the playing indicator, and loading shimmer. */
 

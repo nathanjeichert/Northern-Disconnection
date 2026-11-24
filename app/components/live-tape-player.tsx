@@ -714,7 +714,7 @@ export default function LiveTapePlayer({ identifier, fallbackTitle = 'Live tape'
 
   if (loadState === 'error') {
     return (
-      <div className="border-2 border-rust/50 bg-pine/60 p-2 shadow-[8px_8px_0_rgba(215,180,138,0.25)] sm:p-3">
+      <div className="band tape-deck p-2 sm:p-3">
         <iframe
           src={`https://archive.org/embed/${identifier}?playlist=1&list_height=180`}
           title={fallbackTitle}
@@ -739,7 +739,7 @@ export default function LiveTapePlayer({ identifier, fallbackTitle = 'Live tape'
 
   return (
     <div
-      className="border-2 border-rust/50 bg-pine/60 shadow-[8px_8px_0_rgba(215,180,138,0.25)]"
+      className="band tape-deck"
       data-pipeline={pipeline ?? 'idle'}
       data-audio-context={ctxRunning ? 'running' : 'stopped'}
       data-stream-host={streamHost || undefined}

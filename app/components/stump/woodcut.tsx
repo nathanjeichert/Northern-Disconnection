@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { BANDS, StumpAnalysis } from './analysis'
 import { fitCanvas, startLoop } from './engine'
+import { worldInput } from '@/lib/world/bus'
 import type { StumpVariantProps } from './types'
 
 /*
@@ -237,6 +238,9 @@ export default function LinocutStump({
       const p = live.current
       // still frames (reduced motion, offscreen redraws) ignore the audio
       if (dt > 0) analysis.update(analyserRef.current, p.playing, !!p.synthetic, dt)
+      // the forest behind the page listens too (fireflies, mushrooms, the moon's rings)
+      worldInput.audio = p.playing ? analysis.level : 0
+      worldInput.audioAt = performance.now()
 
       if (p.playing) omega += (OMEGA - omega) * (1 - Math.exp(-dt / 0.7))
       else omega = Math.max(0, omega - (0.03 + 0.5 * omega) * dt)

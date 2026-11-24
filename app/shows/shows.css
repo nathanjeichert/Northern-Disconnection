@@ -1,0 +1,178 @@
+/* Show bills: paper notices with the date on a block of ink. */
+
+.show-bill {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  animation: bill-post 0.7s cubic-bezier(0.2, 0.8, 0.25, 1) both;
+  animation-delay: calc(0.75s + var(--i, 0) * 0.09s);
+}
+
+@keyframes bill-post {
+  from {
+    opacity: 0;
+    transform: translateY(16px) rotate(-0.8deg);
+  }
+}
+
+.show-bill__date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.1rem 0.6rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.show-bill[data-next] .show-bill__date {
+  background: var(--redwood);
+}
+
+.show-bill__weekday {
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  margin-right: -0.34em;
+  color: var(--gold);
+}
+
+.show-bill__day {
+  font-size: 4.4rem;
+  font-weight: 700;
+  line-height: 0.98;
+}
+
+.show-bill__month {
+  font-size: 0.86rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  margin-right: -0.22em;
+}
+
+.show-bill__tba {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+}
+
+.show-bill__body {
+  position: relative;
+  min-width: 0;
+  padding: 1.25rem 1.5rem 1.2rem;
+}
+
+.show-bill__flag {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  padding: 0.14rem 0.7rem 0.18rem;
+  background: var(--gold);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.show-bill__body h2 {
+  font-size: clamp(1.7rem, 5.2vw, 2.5rem);
+  line-height: 1.02;
+  overflow-wrap: anywhere;
+}
+
+.show-bill__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1.3rem;
+  margin-top: 0.5rem;
+  font-size: 1.08rem;
+}
+
+.show-bill__meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.show-bill__meta svg {
+  flex: none;
+  color: var(--redwood);
+}
+
+.show-bill__note {
+  margin-top: 0.6rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+
+.show-bill__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem 1.4rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1.5px dashed rgba(16, 36, 26, 0.35);
+}
+
+.show-bill__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: color 0.2s ease;
+}
+
+.show-bill__link svg {
+  color: var(--redwood);
+}
+
+.show-bill__link:hover {
+  color: var(--redwood);
+}
+
+.show-bill__soldout {
+  padding: 0.1rem 0.6rem;
+  border: 2.5px solid var(--burgundy);
+  color: var(--burgundy);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+}
+
+@media (max-width: 560px) {
+  .show-bill {
+    grid-template-columns: 1fr;
+  }
+  .show-bill__date {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: 0.7rem;
+    padding: 0.5rem 1.1rem 0.55rem;
+  }
+  .show-bill__day {
+    font-size: 2.3rem;
+  }
+  .show-bill__body {
+    padding: 1rem 1.1rem 1.05rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .show-bill {
+    animation: none;
+  }
+}

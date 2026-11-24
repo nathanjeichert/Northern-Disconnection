@@ -10,52 +10,85 @@ Guidance for Claude Code when working in this repository.
 
 ## Project Architecture
 
-Next.js 16 (App Router, React 19, Turbopack) website for Northern Disconnection, a psychedelic americana band from Sonoma County, CA. Deployed on Vercel; GitHub repo `nathanjeichert/Northern-Disconnection`. The design language is "vintage handbill meets redwood forest": deep pine greens, parchment cream, warm tan and marigold, film-grain overlay, and hard-offset "poster" shadows.
+Next.js 16 (App Router, React 19, Turbopack) website for Northern Disconnection, a psychedelic americana band from Sonoma County, CA. Deployed on Vercel; GitHub repo `nathanjeichert/Northern-Disconnection`.
 
-- **Styling**: Tailwind CSS v4 plus custom utilities in `app/global.css`
-- **Animations**: Framer Motion
-- **Typography**: Fraunces (display, `--font-display`) and Alegreya Sans (body, `--font-body`), loaded via `next/font/google` in `app/layout.tsx`
+The whole site is one living WPA-era park poster of an old redwood forest. A painted world sits behind every page; each page is a *place* on one trail through it, at its own time of day, and changing page walks the camera there. The look follows the "National Park" share flyer: a handful of flat inks per scene, halftone fades, condensed gothic caps, a cream paper margin round the viewport.
+
+| Route | Place | Scene |
+| --- | --- | --- |
+| `/` | The Trailhead | golden dusk over the valley |
+| `/shows` | Campfire Circle | night, firelight, sparks |
+| `/music` | The Old Grove | violet moonlight, owl, toadstools, fireflies |
+| `/about` | Base Camp | gold morning, tent, river |
+| `/press` | The Lookout | high summer above a sea of fog |
+
+- **Styling**: Tailwind CSS v4 plus the design system in `app/global.css`
+- **Animations**: the world canvas (raw WebGL2, no library); Framer Motion and CSS for the page
+- **Typography**: Oswald (poster caps, `--font-poster`, `.font-display` / `.poster-title`), Fraunces (serif italic for quieter lines, `--font-serif`, `.font-serif`) and Alegreya Sans (body, `--font-body`), loaded via `next/font/google` in `app/layout.tsx`
 - **Analytics**: Vercel Analytics & Speed Insights
+
+### The world (`lib/world/`)
+
+- `places.ts` — the trail: id, route, plain label ("Shows") and place name ("Campfire Circle") for each page, in order. Light and DOM-safe; everything that needs to know "where are we" imports this. `<html data-place>` carries the current id (set before first paint by an inline script in the layout, then by `WorldCanvas`).
+- `palette.ts` — per-place inks *and* scene parameters (sun position, rays, stars, ridges, fog distance, river, fireflies…). All numbers or colours, so the engine interpolates between two places mid-walk. Retune a scene here first.
+- `paint.ts` — every cut-out prop painted by hand in Canvas2D (boughs, ferns, firs, campfire, benches, guitar, fallen log, toadstools, owl, tent, canoe, lookout tower, rocks, deer, birds). Painted in three pure "inks" (red = base, green = shade, blue = light) that the sprite shader swaps for real colours, so one fern serves every time of day.
+- `shaders.ts` — GLSL: the backdrop (banded sky with halftone bleeds, sun/moon and rings, clouds, four ridges sinking into mist, and a true perspective ground plane with the trail, its wheel ruts, dapples, river, fog sea), procedural redwood trunks, the sprite shader, point particles, and paper grain.
+- `engine.ts` — builds the seeded forest along the trail (`buildScene`), sorts it far to near, and draws it. Camera follows `pathX(z)`; places are `SPACING` units apart; `setPlace()` eases between them. Handles resolution budget and adaptive downscaling, half-rate idle frames, hidden-tab pause, reduced motion (one still frame per place, no walk), and aspect: on narrow screens the framing trunks, boughs and offsets shrink so the composition survives a phone.
+- `bus.ts` — the only thing components import to talk to the world: `travelTo(index)`, and `worldInput` (`audio`, written by the stump visualizer so the grove pulses with the tape; `paused`, set by the press intro when the video hides everything).
+
+`app/components/world/world-canvas.tsx` mounts it in the layout and lazy-loads the engine. The canvas is **taller than the viewport** and `position: sticky` (`.world-sticky`, 160lvh, `top: -60lvh`): it scrolls natively with the page for the first 60% of a screen, then holds on the forest floor. That keeps anything laid out over the first screen registered with the painting with no scroll-linked JS — keep `LOCK` in `engine.ts` and those two CSS numbers in step. The horizon sits 58% down the first screen (`HY0`). Without WebGL2 the wrapper shows a flat two-ink sky/ground from `--place-sky` / `--place-ground`.
+
+Dev only: `?wt=1.5` parks the camera at a fractional place for screenshots.
+
+### Wayfinding (`app/components/trail/`) — there is no nav bar
+
+- `signpost.tsx` — the trailhead signpost on the home page: one paper board per page, plus the mailing list.
+- `trail-chrome.tsx` — two paper tags fixed to the top of every page (home, and "Trail Map"), and the click handler that turns every in-site link into a walk: page fades (`html[data-leaving]`), `travelTo()` starts the camera, the route changes ~230 ms later.
+- `trail-map.tsx` — the fold-out map (the full site navigation as a dialog): contours, river, timber and a dotted trail drawn in SVG, each page a labelled stop, "you are here", plus booking and socials. Two layouts from one set of stops (wide, and tall for phones).
+- `page-head.tsx` — the title block on inner pages: mile marker, outlined poster caps (`.page-head`, legible over any backdrop), optional deck ribbon.
+- `lockup.tsx` — the logo, inked through CSS masks of the original artwork.
+- `place-icon.tsx` — one-ink pictograms for the five places.
+- `trail.css` — all of the above.
+- `app/components/footer.tsx` — "trail continues" back/onward signs, the trail register (mailing list, `#register`), booking, socials.
+- `app/template.tsx` — re-mounts per navigation so each page rises in (`.page-enter`).
 
 ### Theme System
 
-Palette lives in `app/global.css` `:root` variables (`--pine`, `--cream`, `--rust`, `--gold`, ...) with matching utility classes (`.text-cream`, `.bg-pine`, `.border-rust`, ...). Reusable pieces:
+`app/global.css`: palette in `:root` (`--pine`, `--cream`, `--rust`, `--gold`, `--paper`, `--ink`, `--redwood`…) with utility classes (`.text-cream`, `.bg-pine`…), plus per-place variables under `html[data-place='…']` (`--band`, `--sky-ink`, `--sky-shade-solid`, `--accent`, `--place-sky`, `--place-ground`). Reusable pieces:
 
-- `.retro-button` / `.retro-button--ghost` — poster-style buttons with hard offset shadows
-- `.eyebrow` — small-caps section label
-- `.ornament` — fleuron divider (`<div class="ornament">❦</div>`)
-- `.vintage-shadow` — letterpress heading shadow
-- `.logo-cream` — CSS-filter recolor rendering the black-ink logo in cream (nav, footer)
+- `.placard` (+ `--keyline`) — cream paper notice with pine ink; buttons inside it ink themselves
+- `.band` (+ `--keyline`) — solid block of the place's deep ink, cream type (the tape deck, press sheet, footer)
+- `.retro-button` / `--ghost` / `--sm` — poster buttons with hard offset shadows
+- `.eyebrow`, `.poster-title`, `.font-display`, `.font-serif`, `.on-sky`
+- `.poster-frame` — the fixed paper margin; `.grain-overlay`
+- `.logo-cream` / `.logo-ink` — CSS-filter recolours of the black-ink logo
+- `.page` has no `z-index` on purpose: a stacking context there would trap modals under the trail tags
 
-### Art pieces
+### Logo
 
-- **Logo layers** — `public/logo/mark-ink.svg` and `mark-fill.svg` split the hand-drawn mark's vector trace (`public/logonotext.svg`) into its ink lines and fill regions; with `public/logo-wordmark.png` they're used as CSS masks so each can be inked separately. Never redraw or distort the artwork — recolor/mask only.
-- **Home hero logo** — `app/components/hero/hero-logo.tsx` (+ `hero-logo.css`): a three-colour "screenprint" — burgundy and gold plates pull in, the cream key plate lands almost in register on top, and the plates drift slightly with the pointer. Geometry mirrors `/logo-hero.png`; offsets use container-query units.
-- **Site backdrop** — `app/components/backdrop/site-backdrop.tsx` mounts a fixed, dim topographic-map fragment shader (`lib/art/backdrops.ts`) behind every page via the small runner in `lib/art/shader-scene.ts` (resolution scaling, fps cap, offscreen/hidden pause, reduced-motion still frame), plus a compass rose.
-
-### Layout Structure
-
-- `app/layout.tsx` — fonts, metadata, sitewide `MusicGroup` JSON-LD, grain overlay, `Navbar`, page content, `Footer`
-- `app/components/nav.tsx` — fixed nav, hides on scroll down
-- `app/components/footer.tsx` — booking email and socials
+`public/logo/mark-ink.svg` and `mark-fill.svg` split the hand-drawn mark's vector trace (`public/logonotext.svg`) into its ink lines and fill regions; with `public/logo-wordmark.png` they're used as CSS masks so each can be inked separately. Never redraw or distort the artwork — recolour/mask only.
 
 ### Architecture Notes
 
 - Server components load content at build time; client components handle interactivity
 - "Next show" is computed server-side and passed as props to avoid hydration mismatches
 - Horizontal overflow is clipped globally (`overflow-x: clip`) so decorative elements can bleed off-canvas safely
+- If a CSS edit doesn't show up in `next dev`, delete `.next` and restart — Turbopack's cache has gone stale on `global.css` before
 
 ## Content
 
-The only dynamic content file is `content/shows.json`, loaded at build time by `lib/content.ts` (`getShowsContent()`). Edit the JSON (locally or via GitHub's web UI) and Vercel redeploys automatically. Dates are strings like `"June 26th, 2026"` (abbreviations like "Sept 5, 2026" work; a missing year means the next occurrence; anything unreadable, e.g. "TBA", is displayed as written and treated as undated); `lib/show-dates.mjs` parses them strictly (shared by the site via `lib/dates.ts` and by the newsletter scripts, so both always agree), and the site sorts them and finds the next upcoming show (home hero banner + shows page badge). Past shows drop off automatically: `/` and `/shows` filter out any show whose day is over in Pacific time and re-render hourly (`revalidate = 3600`), so a gig disappears the day after it happens with no edit or redeploy — the JSON entry itself can stay. Pushing new upcoming shows also triggers the subscriber announcement email (see Newsletter below).
+The only dynamic content file is `content/shows.json`, loaded at build time by `lib/content.ts` (`getShowsContent()`). Edit the JSON (locally or via GitHub's web UI) and Vercel redeploys automatically. Dates are strings like `"June 26th, 2026"` (abbreviations like "Sept 5, 2026" work; a missing year means the next occurrence; anything unreadable, e.g. "TBA", is displayed as written and treated as undated); `lib/show-dates.mjs` parses them strictly (shared by the site via `lib/dates.ts` and by the newsletter scripts, so both always agree), and the site sorts them and finds the next upcoming show (home page notice + shows page flag). Past shows drop off automatically: `/` and `/shows` filter out any show whose day is over in Pacific time and re-render hourly (`revalidate = 3600`), so a gig disappears the day after it happens with no edit or redeploy — the JSON entry itself can stay. Pushing new upcoming shows to `main` also triggers the subscriber announcement email (see Newsletter below).
+
+**Preview sample dates**: `lib/preview.ts` fills an *empty* calendar with labelled stand-in shows on Vercel preview deployments and in local dev only (`VERCEL_ENV === 'preview'`), so the shows page, home notice and flyer maker can be reviewed between gigs. Production never renders them and they never reach the JSON-LD.
 
 Other page content is inline in its component:
 
-- `app/page.tsx` (server: loads next show) → `app/components/home-client.tsx` — live-photo hero, next-show banner, latest YouTube video, subscribe form
-- `app/about/page.tsx` — about + booking call-out
-- `app/music/page.tsx` — "Live at G-Fest 2025" tape-deck player (`app/components/live-tape-player.tsx`): tracklist/seek/volume UI around the redwood-stump audio visualizer (`app/components/stump-visualizer.tsx` → `app/components/stump/woodcut.tsx`: a living linocut whose inked rings, one per frequency band, are carved by the music; analysis in `stump/analysis.ts`). Streams the item's VBR MP3s via `lib/archive.ts`, which builds per-track URL lists straight to the item's datanodes (`d1`, `d2`, …) with `archive.org/download` last — its redirect mirror has been returning HTTP 500s. The player retries the analysed (CORS + Web Audio) pipeline host by host, falls back to a plain pipeline per song only, pre-buffers the first song while the page is open and the next song near the end of each track. Degrades to the old Archive.org iframe embed if the metadata API is unreachable. Future tapes: render another `<LiveTapePlayer identifier="..." />`.
+- `app/page.tsx` (server: loads next show) → `app/components/home-client.tsx` (+ `home.css`) — the poster: logo lockup in the dusk sky, the next-show notice, the signpost, then the latest YouTube video on the forest floor
+- `app/shows/` — show "bills" (`shows.css`): date on a block of ink, venue in poster caps, add-to-calendar, share flyer, tickets
+- `app/about/page.tsx` (+ `about.css`) — story on placards, photos as tacked-up snapshots, booking call-out
+- `app/music/page.tsx` — the tape deck (`app/components/tape-shelf.tsx` picks the tape; `live-tape-player.tsx` plays it): tracklist/seek/volume UI around the redwood-stump audio visualizer (`app/components/stump-visualizer.tsx` → `app/components/stump/woodcut.tsx`: a living linocut whose inked rings, one per frequency band, are carved by the music; analysis in `stump/analysis.ts`). The stump also reports its level to the world (`worldInput.audio`), so fireflies, toadstools and the moon's rings move with the tape. Streams the item's VBR MP3s via `lib/archive.ts`, which builds per-track URL lists straight to the item's datanodes (`d1`, `d2`, …) with `archive.org/download` last — its redirect mirror has been returning HTTP 500s. The player retries the analysed (CORS + Web Audio) pipeline host by host, falls back to a plain pipeline per song only, pre-buffers the first song while the page is open and the next song near the end of each track. Degrades to the old Archive.org iframe embed if the metadata API is unreachable. Future tapes: add to `TAPES` in `tape-shelf.tsx`.
 
-- `app/press/page.tsx` — the press kit (EPK), linked from the footer and sitemap. All its words and lists live in `content/press.json` (bios, tagline, highlights, venues, booking facts, input list, featured tracks, photos, downloads, links); `seoGenres` go only into metadata. It opens on `press-intro.tsx`: the promo fills the first screen and starts muted on load (looping, paused when scrolled away), with a play button superimposed; clicking/tapping restarts it from the top with sound and locks the page. Where the 16:9 picture doesn't match the screen, a blurred canvas copy of the current frame fills the rest and the picture's edges are feathered into it. The nav stays hidden while the hero fills the screen (`html[data-press-immersive] .site-nav`) and returns on scroll or when the pointer touches the top edge (`data-press-peek`). During sound playback, scroll, swipe, Esc, "Skip intro" or the video ending glide down to `#press-kit`; controls fade after 2.5 s idle. `press-tracks.tsx` streams the featured songs from the Archive tape. The example stage plot is `public/press/stage-plot.svg`, inlined on the page.
+- `app/press/page.tsx` — the press kit (EPK), linked from the signpost, map, footer and sitemap. All its words and lists live in `content/press.json` (bios, tagline, highlights, venues, booking facts, input list, featured tracks, photos, downloads, links); `seoGenres` go only into metadata. It opens on `press-intro.tsx`: the promo fills the first screen and starts muted on load (looping, paused when scrolled away), with a play button superimposed; clicking/tapping restarts it from the top with sound and locks the page. Where the 16:9 picture doesn't match the screen, the painted lookout shows around it and the picture's edges are feathered into the scene (most visible on phones); the backdrop dims once sound is playing. The trail tags stay hidden while the hero fills the screen (`html[data-press-immersive] .trail-chrome`) and return on scroll or when the pointer touches the top edge (`data-press-peek`). During sound playback, scroll, swipe, Esc, "Skip intro" or the video ending glide down to `#press-kit`; controls fade after 2.5 s idle. The kit itself is one long `.press-sheet.band`. `press-tracks.tsx` streams the featured songs from the Archive tape. The example stage plot is `public/press/stage-plot.svg`, inlined on the page.
   - Downloads (`public/press/*.zip|pdf`) are generated by `node scripts/make-press-kit.mjs` (needs `zip` and Playwright for the PDFs); re-run after editing `press.json`, the photos in `public/press/photos/`, the logo sources in `public/press/logos/` or the stage plot.
   - Promo video: `promo-1080.mp4` / `promo-720.mp4` are re-encoded from the 1080p master in the band Drive ("Promo Video (G-Fest 2026)"), since the share file is over GitHub's 100 MB limit: `ffmpeg -i master.mp4 -c:v libx264 -preset veryslow -crf 24 -maxrate 4M -bufsize 8M -pix_fmt yuv420p -c:a aac -b:a 160k -movflags +faststart promo-1080.mp4`, and the same with `-vf scale=-2:720 -crf 25 -maxrate 2M -bufsize 4M -b:a 128k` for 720p. Phones and small screens get the 720p file.
 

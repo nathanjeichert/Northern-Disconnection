@@ -1,0 +1,787 @@
+/*
+  Wayfinding: everything that replaces a navigation bar. The logo lockup,
+  the signpost at the trailhead, the two paper tags pinned to the top of
+  every page, the fold-out trail map, and the "trail continues" signs at
+  the foot of each page.
+*/
+
+/* ---------------------------------------------------------------- */
+/* Logo lockup — the hand-drawn mark and wordmark, inked through     */
+/* masks of the original artwork (never redrawn).                    */
+/* Geometry mirrors /logo-hero.png (1280×720).                       */
+/* ---------------------------------------------------------------- */
+
+.lockup {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1280 / 720;
+  container-type: inline-size;
+}
+
+.lockup__plate {
+  position: absolute;
+  inset: 0;
+}
+
+.lockup__plate--shade {
+  transform: translate(0.62cqw, 0.7cqw);
+}
+
+.lockup__mark,
+.lockup__word {
+  position: absolute;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+.lockup__mark {
+  left: 2.543%;
+  top: 0.771%;
+  width: 18.41%;
+  height: 97.58%;
+}
+
+.lockup__word {
+  left: 19.766%;
+  top: 17.778%;
+  width: 78.36%;
+  height: 59.17%;
+  -webkit-mask-image: url('/logo-wordmark.png');
+  mask-image: url('/logo-wordmark.png');
+}
+
+.lockup__mark--ink {
+  -webkit-mask-image: url('/logo/mark-ink.svg');
+  mask-image: url('/logo/mark-ink.svg');
+}
+
+.lockup__mark--fill {
+  -webkit-mask-image: url('/logo/mark-fill.svg');
+  mask-image: url('/logo/mark-fill.svg');
+}
+
+.lockup__mark--sil {
+  -webkit-mask-image: url('/logo/mark-fill.svg'), url('/logo/mark-ink.svg');
+  mask-image: url('/logo/mark-fill.svg'), url('/logo/mark-ink.svg');
+  -webkit-mask-size: 100% 100%, 100% 100%;
+  mask-size: 100% 100%, 100% 100%;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-composite: source-over;
+  mask-composite: add;
+}
+
+/* ---------------------------------------------------------------- */
+/* The signpost                                                      */
+/* ---------------------------------------------------------------- */
+
+.signpost {
+  --board-h: 2.85rem;
+  --post-w: 16px;
+  position: relative;
+  width: min(100%, 31rem);
+  padding-top: 1.1rem;
+  /* it stands a few paces into the scene and leans with the camera */
+  transform: translate3d(calc(var(--world-sway) / 6), 0, 0);
+}
+
+.signpost__post {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: -3.4rem;
+  width: var(--post-w);
+  margin-left: calc(var(--post-w) / -2);
+  background: linear-gradient(90deg, var(--bark) 0 36%, var(--redwood) 36% 82%, var(--ember) 82% 100%);
+  box-shadow: 4px 4px 0 rgba(5, 14, 10, 0.4);
+}
+
+.signpost__post::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  top: -7px;
+  height: 9px;
+  background: var(--bark);
+}
+
+.signpost__boards {
+  position: relative;
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.signpost__boards li {
+  width: fit-content;
+  max-width: calc(50% + 15rem);
+  filter: drop-shadow(4px 4px 0 rgba(5, 14, 10, 0.6));
+}
+
+/* odd boards point right from the post, even boards point left */
+.signpost__boards li:nth-child(odd) {
+  margin-left: calc(50% - 1.3rem);
+}
+
+.signpost__boards li:nth-child(even) {
+  margin-left: auto;
+  margin-right: calc(50% - 1.3rem);
+}
+
+.signboard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  height: var(--board-h);
+  padding: 0 2.1rem 0 2.5rem;
+  background: var(--paper);
+  color: var(--ink);
+  clip-path: polygon(0 0, calc(100% - 1.25rem) 0, 100% 50%, calc(100% - 1.25rem) 100%, 0 100%);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform-origin: 1.3rem 50%;
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1), background-color 0.2s ease;
+}
+
+.signpost__boards li:nth-child(even) .signboard {
+  flex-direction: row-reverse;
+  padding: 0 2.5rem 0 2.1rem;
+  clip-path: polygon(1.25rem 0, 100% 0, 100% 100%, 1.25rem 100%, 0 50%);
+  transform-origin: calc(100% - 1.3rem) 50%;
+}
+
+/* two bolts where the board meets the post */
+.signboard::before {
+  content: '';
+  position: absolute;
+  left: 1.05rem;
+  top: 50%;
+  width: 0.42rem;
+  height: 0.42rem;
+  margin-top: -0.85rem;
+  border-radius: 50%;
+  background: var(--bark);
+  box-shadow: 0 1.28rem 0 var(--bark);
+}
+
+.signpost__boards li:nth-child(even) .signboard::before {
+  left: auto;
+  right: 1.05rem;
+}
+
+.signboard small {
+  font-family: var(--font-body), Georgia, serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--redwood);
+}
+
+.signboard svg {
+  flex: none;
+  color: var(--redwood);
+}
+
+.signboard:hover,
+.signboard:focus-visible {
+  background: var(--gold);
+  transform: rotate(calc(var(--tilt, 0deg) * -1.6)) scale(1.035);
+}
+
+.signpost__boards li:nth-child(1) { --tilt: -1.4deg; }
+.signpost__boards li:nth-child(2) { --tilt: 1.1deg; }
+.signpost__boards li:nth-child(3) { --tilt: 0.8deg; }
+.signpost__boards li:nth-child(4) { --tilt: -0.9deg; }
+.signpost__boards li:nth-child(5) { --tilt: 1.3deg; }
+
+@keyframes board-swing {
+  0% { transform: rotate(calc(var(--tilt, 0deg) + var(--swing, 14deg))); opacity: 0; }
+  100% { transform: rotate(var(--tilt, 0deg)); opacity: 1; }
+}
+
+.signpost__boards li .signboard {
+  animation: board-swing 0.9s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+  animation-delay: calc(1.5s + var(--i, 0) * 0.11s);
+}
+
+.signpost__boards li:nth-child(even) .signboard {
+  --swing: -14deg;
+}
+
+@media (max-width: 640px) {
+  .signpost {
+    --board-h: 2.6rem;
+    --post-w: 13px;
+    width: min(100%, 23rem);
+  }
+  .signboard {
+    font-size: 1.22rem;
+    padding: 0 1.7rem 0 2.2rem;
+    gap: 0.5rem;
+  }
+  .signpost__boards li:nth-child(even) .signboard {
+    padding: 0 2.2rem 0 1.7rem;
+  }
+  .signboard small {
+    display: none;
+  }
+  .signpost__post {
+    bottom: -1.6rem;
+  }
+  .signpost__boards {
+    gap: 0.42rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signpost {
+    transform: none;
+  }
+  .signpost__boards li .signboard {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Paper tags pinned to the top of every page                        */
+/* ---------------------------------------------------------------- */
+
+.trail-chrome {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: calc(var(--frame) + 12px) calc(var(--frame) + 14px) 0;
+  pointer-events: none;
+  transition: transform 0.45s ease, opacity 0.45s ease;
+}
+
+.trail-chrome > * {
+  pointer-events: auto;
+}
+
+/* steps aside while the press promo fills the screen (press-intro.tsx) */
+html[data-press-immersive]:not([data-press-peek]) .trail-chrome {
+  transform: translateY(-120%);
+  opacity: 0;
+}
+
+html[data-press-immersive]:not([data-press-peek]) .trail-chrome > * {
+  pointer-events: none;
+}
+
+.trail-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 2.9rem;
+  padding: 0 1rem 0 0.7rem;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 4px 4px 0 rgba(5, 14, 10, 0.6);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 600;
+  font-size: 0.98rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, opacity 0.4s ease;
+}
+
+.trail-tag:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(5, 14, 10, 0.6);
+  background: var(--gold);
+}
+
+.trail-tag:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(5, 14, 10, 0.6);
+}
+
+.trail-tag img {
+  height: 2.1rem;
+  width: auto;
+}
+
+.trail-tag--home[data-hidden='true'] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.trail-tag--map {
+  padding: 0 1.05rem 0 0.85rem;
+}
+
+.trail-tag--map svg {
+  color: var(--redwood);
+}
+
+@media (max-width: 640px) {
+  .trail-chrome {
+    padding: calc(var(--frame) + 8px) calc(var(--frame) + 8px) 0;
+  }
+  .trail-tag {
+    height: 2.6rem;
+    font-size: 0.86rem;
+    letter-spacing: 0.13em;
+    padding: 0 0.8rem 0 0.55rem;
+  }
+  .trail-tag img {
+    height: 1.85rem;
+  }
+  .trail-tag--home span {
+    display: none;
+  }
+  .trail-tag--home {
+    padding: 0 0.6rem;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* The trail map                                                     */
+/* ---------------------------------------------------------------- */
+
+.trail-map {
+  --pad: clamp(10px, 3.2vw, 44px);
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: var(--pad);
+  background: rgba(5, 14, 10, 0.74);
+  animation: map-dim 0.3s ease both;
+}
+
+@keyframes map-dim {
+  from { background: rgba(5, 14, 10, 0); }
+}
+
+.trail-map__sheet {
+  position: relative;
+  width: min(100%, 1120px, calc((100vh - 2 * var(--pad)) * 1.5));
+  width: min(100%, 1120px, calc((100dvh - 2 * var(--pad)) * 1.5));
+  aspect-ratio: 3 / 2;
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.24 0 0 0 0 0.12 0 0 0 0.5 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  color: var(--ink);
+  box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.45);
+  container-type: inline-size;
+  transform-origin: 50% 0;
+  animation: map-unfold 0.55s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+
+/* unrolls from the top edge, like a map dropped open */
+@keyframes map-unfold {
+  from {
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-14px) rotate(-0.6deg);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+
+.trail-map__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.trail-map__art--tall {
+  display: none;
+}
+
+.trail-map__title {
+  position: absolute;
+  left: 4.2cqw;
+  top: 3.6cqw;
+  padding: 1.5cqw 2.2cqw 1.6cqw;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0.6cqw 0.6cqw 0 var(--redwood);
+}
+
+.trail-map__title p {
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: max(0.6rem, 1.15cqw);
+  color: var(--gold);
+}
+
+.trail-map__title h2 {
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  font-size: max(1.5rem, 4.4cqw);
+  margin-top: 0.4cqw;
+}
+
+.trail-map__close {
+  position: absolute;
+  right: 3cqw;
+  top: 3cqw;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.trail-map__close:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.map-stop {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  max-width: 24cqw;
+  transform: translate(-50%, -2.6cqw);
+  text-align: center;
+  animation: stop-pop 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  animation-delay: calc(0.35s + var(--i) * 0.09s);
+}
+
+@keyframes stop-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -2.6cqw) scale(0.7);
+  }
+}
+
+.map-stop__badge {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: max(2.6rem, 5.2cqw);
+  height: max(2.6rem, 5.2cqw);
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0 0 0 0.35cqw var(--paper), 0 0 0 0.55cqw var(--ink);
+  transition: transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1), background-color 0.2s ease;
+}
+
+.map-stop__badge svg {
+  width: 56%;
+  height: 56%;
+}
+
+.map-stop__label {
+  margin-top: 0.9cqw;
+  padding: 0.1em 0.5em 0.14em;
+  background: var(--paper);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 700;
+  font-size: max(1.05rem, 2.5cqw);
+  line-height: 1.05;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.map-stop__name {
+  padding: 0 0.5em 0.1em;
+  background: var(--paper);
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: max(0.78rem, 1.45cqw);
+  line-height: 1.25;
+  color: var(--redwood);
+}
+
+.map-stop:hover .map-stop__badge,
+.map-stop:focus-visible .map-stop__badge {
+  transform: scale(1.12) rotate(-6deg);
+  background: var(--redwood);
+}
+
+.map-stop:hover .map-stop__label,
+.map-stop:focus-visible .map-stop__label {
+  background: var(--gold);
+}
+
+.map-stop[aria-current='page'] .map-stop__badge {
+  background: var(--redwood);
+}
+
+.map-stop[aria-current='page'] .map-stop__badge::after {
+  content: '';
+  position: absolute;
+  inset: -0.9cqw;
+  border: 2px solid var(--redwood);
+  border-radius: 50%;
+  animation: here-pulse 2s ease-out infinite;
+}
+
+@keyframes here-pulse {
+  from { transform: scale(0.85); opacity: 0.9; }
+  to { transform: scale(1.5); opacity: 0; }
+}
+
+.map-stop__here {
+  position: absolute;
+  bottom: calc(100% + 0.5cqw);
+  padding: 0.15em 0.6em;
+  background: var(--gold);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 600;
+  font-size: max(0.6rem, 1.05cqw);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.trail-map__foot {
+  position: absolute;
+  left: 4.2cqw;
+  right: 4.2cqw;
+  bottom: 3.2cqw;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 1.4rem;
+  padding-top: 1.2cqw;
+  border-top: 2px solid var(--ink);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: max(0.72rem, 1.25cqw);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.trail-map__foot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  text-decoration: underline;
+  text-decoration-color: rgba(138, 59, 39, 0.55);
+  text-underline-offset: 0.25em;
+}
+
+.trail-map__foot a:hover {
+  color: var(--redwood);
+}
+
+.trail-map__foot ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trail-map text {
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  text-transform: uppercase;
+}
+
+.trail-map__path {
+  stroke-dasharray: 1 13;
+  animation: path-walk 1.3s ease-out both;
+}
+
+@keyframes path-walk {
+  from { opacity: 0; }
+}
+
+/* a tall sheet when the screen is taller than it is wide */
+@media (max-aspect-ratio: 1/1) {
+  .trail-map__sheet {
+    width: min(100%, calc((100vh - 2 * var(--pad)) * 0.62));
+    width: min(100%, calc((100dvh - 2 * var(--pad)) * 0.62));
+    aspect-ratio: 0.62;
+  }
+  .trail-map__art--wide {
+    display: none;
+  }
+  .trail-map__art--tall {
+    display: block;
+  }
+  .map-stop {
+    left: var(--tx);
+    top: var(--ty);
+    max-width: 46cqw;
+    transform: translate(-50%, -6.5cqw);
+  }
+  @keyframes stop-pop {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -6.5cqw) scale(0.7);
+    }
+  }
+  .map-stop__badge {
+    width: 13cqw;
+    height: 13cqw;
+    box-shadow: 0 0 0 0.8cqw var(--paper), 0 0 0 1.3cqw var(--ink);
+  }
+  .map-stop__label {
+    font-size: max(1.05rem, 6cqw);
+    margin-top: 2cqw;
+  }
+  .map-stop__name {
+    font-size: max(0.8rem, 3.6cqw);
+  }
+  .map-stop__here {
+    font-size: max(0.6rem, 2.6cqw);
+    bottom: calc(100% + 1.4cqw);
+  }
+  .map-stop[aria-current='page'] .map-stop__badge::after {
+    inset: -2.2cqw;
+  }
+  .trail-map__title {
+    left: 5cqw;
+    top: 5cqw;
+    padding: 2.6cqw 3.6cqw 2.8cqw;
+    box-shadow: 1.2cqw 1.2cqw 0 var(--redwood);
+  }
+  .trail-map__title p {
+    font-size: max(0.56rem, 2.5cqw);
+  }
+  .trail-map__title h2 {
+    font-size: max(1.4rem, 8.6cqw);
+  }
+  .trail-map__close {
+    right: 4cqw;
+    top: 4.6cqw;
+  }
+  .trail-map__foot {
+    left: 5cqw;
+    right: 5cqw;
+    bottom: 4cqw;
+    padding-top: 2.4cqw;
+    font-size: max(0.68rem, 2.9cqw);
+    justify-content: center;
+  }
+  .trail-map__foot ul {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trail-map,
+  .trail-map__sheet,
+  .map-stop,
+  .trail-map__path {
+    animation: none;
+  }
+  .map-stop[aria-current='page'] .map-stop__badge::after {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* "The trail continues" — the pair of signs at the foot of a page    */
+/* ---------------------------------------------------------------- */
+
+.trail-next {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 3.5rem;
+}
+
+.trail-next__sign {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: min(100%, 15rem);
+  min-height: 4.4rem;
+  padding: 0.7rem 2.3rem 0.75rem 1.2rem;
+  background: var(--paper);
+  color: var(--ink);
+  clip-path: polygon(0 0, calc(100% - 1.4rem) 0, 100% 50%, calc(100% - 1.4rem) 100%, 0 100%);
+  transition: background-color 0.2s ease, transform 0.25s ease;
+}
+
+.trail-next__wrap {
+  filter: drop-shadow(5px 5px 0 rgba(5, 14, 10, 0.6));
+}
+
+.trail-next__wrap--back .trail-next__sign {
+  padding: 0.7rem 1.2rem 0.75rem 2.3rem;
+  clip-path: polygon(1.4rem 0, 100% 0, 100% 100%, 1.4rem 100%, 0 50%);
+}
+
+.trail-next__wrap--onward {
+  margin-left: auto;
+  text-align: right;
+}
+
+.trail-next__sign:hover {
+  background: var(--gold);
+  transform: translateX(4px);
+}
+
+.trail-next__wrap--back .trail-next__sign:hover {
+  transform: translateX(-4px);
+}
+
+.trail-next__sign small {
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--redwood);
+}
+
+.trail-next__sign strong {
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.trail-next__sign em {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 0.85rem;
+  color: var(--redwood);
+}

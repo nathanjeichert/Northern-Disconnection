@@ -38,7 +38,7 @@ function SectionHead({ eyebrow, title }: { eyebrow?: string; title: string }) {
   return (
     <header className="press-head">
       {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-      <h2 className="font-display text-3xl text-cream sm:text-4xl">{title}</h2>
+      <h2 className="poster-title text-3xl text-cream sm:text-4xl">{title}</h2>
     </header>
   )
 }
@@ -54,13 +54,15 @@ export default function PressPage() {
         targetId={CONTENT_ID}
       />
 
-      <div id={CONTENT_ID} className="press-kit px-4 pb-24">
-        <div className="mx-auto max-w-5xl">
+      <div id={CONTENT_ID} className="press-kit px-3 pb-20 pt-10 sm:px-5 sm:pt-16">
+        <div className="press-sheet band mx-auto max-w-5xl">
           {/* ============ MASTHEAD ============ */}
-          <header className="pt-28 text-center sm:pt-32">
-            <p className="eyebrow">Electronic Press Kit</p>
-            <h1 className="font-display vintage-shadow mt-3 text-5xl text-cream sm:text-7xl">Northern Disconnection</h1>
-            <p className="mt-4 text-lg italic text-sand sm:text-xl">{press.tagline}</p>
+          <header className="pt-20 text-center sm:pt-24">
+            <p className="eyebrow">
+              Mile 4 <span className="mx-1 text-gold">✦</span> The Lookout <span className="mx-1 text-gold">✦</span> Electronic press kit
+            </p>
+            <h1 className="poster-title vintage-shadow mt-3 text-5xl text-cream sm:text-7xl">Northern Disconnection</h1>
+            <p className="font-serif mt-4 text-lg italic text-sand sm:text-xl">{press.tagline}</p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
               <a href={`mailto:${press.booking.email}`} className="retro-button">
                 <Mail size={16} />

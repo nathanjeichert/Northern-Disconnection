@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getShowsContent } from '@/lib/content'
 import { sortShowsByDate, findNextShowIndex, upcomingOnly } from '@/lib/dates'
 import { upcomingEventsJsonLd } from '@/lib/structured-data'
+import { withPreviewShows } from '@/lib/preview'
 import ShowsClient from './shows-client'
 
 const description = 'Upcoming concerts and events for Northern Disconnection.'
@@ -24,9 +25,11 @@ export const metadata: Metadata = {
 
 export default function ShowsPage() {
   const content = getShowsContent()
-  const sortedShows = sortShowsByDate(upcomingOnly(content.upcomingShows))
-  const nextShowIndex = findNextShowIndex(sortedShows)
-  const eventsJsonLd = upcomingEventsJsonLd(sortedShows)
+  const real = sortShowsByDate(upcomingOnly(content.upcomingShows))
+  // structured data only ever describes real shows
+  const eventsJsonLd = upcomingEventsJsonLd(real)
+  const { shows, sample } = withPreviewShows(real)
+  const nextShowIndex = findNextShowIndex(shows)
 
   return (
     <>
@@ -36,11 +39,7 @@ export default function ShowsPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(eventsJsonLd) }}
         />
       )}
-      <ShowsClient
-        title={content.pageContent.title}
-        shows={sortedShows}
-        nextShowIndex={nextShowIndex}
-      />
+      <ShowsClient title={content.pageContent.title} shows={shows} nextShowIndex={nextShowIndex} sample={sample} />
     </>
   )
 }

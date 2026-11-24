@@ -1,0 +1,199 @@
+/* The trailhead: the first screen laid over the painting. The horizon sits
+   58% down the first screen (HY0 in lib/world/engine.ts) — the logo is set
+   in the sky above it, the notice and signpost on the ground below. */
+
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: calc(var(--frame) + 4.2rem) clamp(1.25rem, 5vw, 3rem) 0;
+}
+
+.hero__identity {
+  position: relative;
+  width: min(100%, 43rem);
+  margin: 0 auto;
+  container-type: inline-size;
+  animation: hero-rise 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s both;
+}
+
+/* the line under the wordmark, set on a strip of ink like a poster's
+   second colour */
+.hero__ribbon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin: -3.5% auto 0;
+  padding: 0.42em 1.1em 0.46em;
+  white-space: nowrap;
+  background: var(--ink);
+  color: var(--cream);
+  box-shadow: 4px 4px 0 var(--redwood);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-weight: 500;
+  font-size: clamp(0.66rem, 3.1cqw, 0.98rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.hero__ribbon i {
+  margin: 0 0.5em;
+  font-style: normal;
+  color: var(--gold);
+}
+
+.hero__ground {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.4rem;
+  margin-top: 1.4rem;
+  padding-bottom: 1.6rem;
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+}
+
+/* ---- the next-show notice ---- */
+
+.notice {
+  display: block;
+  width: min(92%, 21rem);
+  transform: rotate(-1.2deg) translate3d(calc(var(--world-sway) / 5), 0, 0);
+  transition: transform 0.3s cubic-bezier(0.3, 1.5, 0.5, 1), box-shadow 0.3s ease;
+  animation: hero-rise 1s cubic-bezier(0.2, 0.7, 0.2, 1) 1.2s both;
+}
+
+.notice:hover {
+  transform: rotate(0deg) translate(-2px, -3px);
+  box-shadow: 10px 10px 0 rgba(5, 14, 10, 0.6);
+}
+
+.notice__head {
+  display: block;
+  padding: 0.36rem 1rem 0.4rem;
+  background: var(--redwood);
+  color: var(--cream);
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+.notice__body {
+  display: block;
+  padding: 0.7rem 1rem 0.85rem;
+}
+
+.notice__date {
+  display: block;
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--redwood);
+}
+
+.notice__venue {
+  display: block;
+  font-family: var(--font-poster), 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.notice__where {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-top: 0.15rem;
+  font-size: 0.98rem;
+}
+
+.notice__where b {
+  font-size: 1.2rem;
+  color: var(--redwood);
+  transition: transform 0.2s ease;
+}
+
+.notice:hover .notice__where b {
+  transform: translateX(4px);
+}
+
+/* ---- wide screens: identity to the left under the boughs, the signpost
+        to the right, silhouetted against the low sun ---- */
+
+@media (min-width: 900px) {
+  .hero {
+    padding: calc(var(--frame) + 3rem) 13vw 0;
+  }
+  .hero__identity {
+    width: min(47vw, 45rem, 84svh);
+    margin: 1svh 0 0 -1vw;
+  }
+  .hero__ribbon {
+    margin: -5.5% 0 0 20.5%;
+    font-size: 2.05cqw;
+  }
+  .hero__ground {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: 0;
+    padding-bottom: 3.4rem;
+  }
+  .notice {
+    margin-bottom: 5svh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__identity,
+  .notice {
+    animation: none;
+  }
+  .notice {
+    transform: rotate(-1.2deg);
+  }
+}
+
+/* ---- latest video, down on the forest floor ---- */
+
+.reel {
+  position: relative;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: clamp(5rem, 16vh, 9rem) 1.25rem 5rem;
+}
+
+.reel__frame {
+  padding: clamp(0.9rem, 2.4vw, 1.6rem);
+}
+
+.reel__head {
+  padding: 0.4rem 0.4rem 1.1rem;
+}
+
+.reel__head h2 {
+  margin-top: 0.3rem;
+  font-size: clamp(1.4rem, 3.4vw, 2.1rem);
+  line-height: 1.15;
+  color: var(--cream);
+}

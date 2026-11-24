@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Mail } from 'lucide-react'
-import Ornament from '@/app/components/ornament'
+import PageHead from '@/app/components/trail/page-head'
+import './about.css'
 
 const aboutSections = [
   {
@@ -32,67 +33,40 @@ export const metadata: Metadata = {
   },
 }
 
+// Base camp: the story on paper notices, the photographs as snapshots
+// tacked up beside them.
 export default function AboutPage() {
   return (
-    <div className="min-h-screen pb-24 pt-32">
-      <div className="mx-auto max-w-6xl space-y-20 px-4">
-        <header className="text-center">
-          <h1 className="font-display vintage-shadow text-5xl text-cream sm:text-6xl">About the Band</h1>
-          <Ornament className="mt-6" />
-        </header>
+    <div className="trail-page">
+      <div className="mx-auto max-w-5xl">
+        <PageHead place="camp" title="About the Band">
+          <p className="page-head__deck">Blues, folk, jazz and psychedelic rock from the coastal forests of Northern California.</p>
+        </PageHead>
 
-        {aboutSections.map((section, index) => {
-          const isEven = index % 2 === 0
-
-          return (
-            <section
-              key={section.image.src}
-              className="grid items-center gap-12 md:grid-cols-2 md:gap-16"
-            >
-              <div className={`text-lg leading-relaxed text-sand ${isEven ? '' : 'md:order-2'}`}>
-                <p className="first-letter:font-display first-letter:float-left first-letter:mr-3 first-letter:text-6xl first-letter:leading-[0.85] first-letter:text-gold">
-                  {section.text}
-                </p>
+        <div className="about-story">
+          {aboutSections.map((section, index) => (
+            <section key={section.image.src} className="about-leaf" data-flip={index % 2 === 1 || undefined}>
+              <div className="about-leaf__text placard placard--keyline">
+                <p>{section.text}</p>
               </div>
 
-              <div className={`relative ${isEven ? 'md:-mr-16' : 'md:-ml-16 md:order-1'}`}>
-                <div
-                  className={`absolute -inset-6 -z-10 rounded-full bg-gold/10 blur-3xl ${
-                    isEven ? 'translate-y-8 -translate-x-6' : '-translate-y-8 translate-x-6'
-                  }`}
-                  aria-hidden="true"
-                ></div>
-                {/* vintage snapshot frame */}
-                <div
-                  className={`relative border-[10px] border-cream bg-cream shadow-2xl ${
-                    isEven ? 'rotate-1 md:translate-y-6' : '-rotate-1 md:-translate-y-6'
-                  }`}
-                >
-                  <div className="relative aspect-[3/4] overflow-hidden">
-                    <Image
-                      src={section.image.src}
-                      alt={section.image.alt}
-                      fill
-                      sizes="(min-width: 768px) 420px, 80vw"
-                      className="object-cover"
-                      priority={index === 0}
-                    />
-                  </div>
+              <figure className="about-leaf__photo">
+                <div className="relative aspect-[3/4] overflow-hidden">
+                  <Image src={section.image.src} alt={section.image.alt} fill sizes="(min-width: 768px) 420px, 80vw" className="object-cover" priority={index === 0} />
                 </div>
-              </div>
+              </figure>
             </section>
-          )
-        })}
+          ))}
+        </div>
 
         {/* Booking call-out */}
-        <section className="mx-auto max-w-3xl border-2 border-rust/40 bg-moss/30 px-8 py-10 text-center shadow-[8px_8px_0_rgba(215,180,138,0.2)]">
-          <p className="eyebrow mb-3">Booking &amp; Inquiries</p>
-          <p className="mb-6 text-lg text-sand">
-            Venues, festivals, and private events around the Bay Area — drop us a line.
-          </p>
+        <section className="band band--keyline mx-auto mt-20 max-w-3xl px-8 py-11 text-center">
+          <p className="eyebrow mb-3">Booking &amp; inquiries</p>
+          <h2 className="poster-title text-3xl text-cream sm:text-4xl">Bring the band to you</h2>
+          <p className="mx-auto mb-7 mt-3 max-w-md text-lg text-sand">Venues, festivals, and private events around the Bay Area — drop us a line.</p>
           <a href="mailto:booking@northerndisconnection.com" className="retro-button">
             <Mail size={16} />
-            Contact Us
+            Contact us
           </a>
         </section>
       </div>

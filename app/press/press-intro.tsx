@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ChevronDown, Play, Volume2, VolumeX } from 'lucide-react'
+import { worldInput } from '@/lib/world/bus'
 
 interface PressIntroProps {
   poster: string
@@ -42,12 +43,12 @@ function lockPage(locked: boolean) {
 // floating over it; any click or tap restarts it from the top with sound.
 // The site nav stays out of the way while the video fills the screen and
 // comes back on scroll or when the pointer reaches the top edge. Wherever
-// the video doesn't match the screen's shape, a blurred copy of the current
-// frame fills the rest, so there is never a visible frame or letterbox.
+// the video doesn't match the screen's shape, the painted lookout behind the
+// page shows through and the picture's edges are feathered into it, so
+// there is never a visible frame or letterbox.
 export default function PressIntro({ poster, hd, sd, durationLabel, targetId }: PressIntroProps) {
   const heroRef = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
   const modeRef = useRef<Mode>('preview')
   const inViewRef = useRef(true)
 
@@ -84,6 +85,8 @@ export default function PressIntro({ poster, hd, sd, durationLabel, targetId }: 
         inViewRef.current = entry.isIntersecting
         const filling = entry.intersectionRatio >= 0.5
         setImmersive(filling)
+        // no need to paint the world while the picture hides all of it
+        worldInput.paused = entry.intersectionRatio >= 0.98 && window.innerWidth / window.innerHeight >= 16 / 9 - 0.03
         if (filling) root.dataset.pressImmersive = ''
         else {
           delete root.dataset.pressImmersive
@@ -94,7 +97,7 @@ export default function PressIntro({ poster, hd, sd, durationLabel, targetId }: 
         if (entry.isIntersecting && !prefersReducedMotion()) video.play().catch(() => {})
         else video.pause()
       },
-      { threshold: [0, 0.5] },
+      { threshold: [0, 0.5, 0.98] },
     )
     observer.observe(hero)
 
@@ -107,25 +110,9 @@ export default function PressIntro({ poster, hd, sd, durationLabel, targetId }: 
       nav?.removeEventListener('mouseleave', unpeek)
       delete root.dataset.pressImmersive
       delete root.dataset.pressPeek
+      worldInput.paused = false
       lockPage(false)
     }
-  }, [])
-
-  // Ambient fill: a tiny canvas copy of the current frame, blurred by CSS.
-  useEffect(() => {
-    const video = videoRef.current
-    const ctx = canvasRef.current?.getContext('2d')
-    if (!video || !ctx) return
-    let raf = 0
-    let last = 0
-    const tick = (now: number) => {
-      raf = requestAnimationFrame(tick)
-      if (now - last < 120 || document.hidden || !inViewRef.current || video.readyState < 2) return
-      last = now
-      ctx.drawImage(video, 0, 0, ctx.canvas.width, ctx.canvas.height)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
   }, [])
 
   const finish = useCallback(() => {
@@ -244,10 +231,6 @@ export default function PressIntro({ poster, hd, sd, durationLabel, targetId }: 
       data-ui={showUi ? 'on' : 'off'}
       aria-label="Promo video"
     >
-      <div className="press-intro__ambient" style={{ backgroundImage: `url(${poster})` }} aria-hidden="true">
-        <canvas ref={canvasRef} width={64} height={36} />
-      </div>
-
       <video
         ref={videoRef}
         className="press-intro__video"

@@ -2,13 +2,14 @@
 
 The official website for Northern Disconnection, a psychedelic americana band from Sonoma County, CA. Live site: [northerndisconnection.com](https://northerndisconnection.com)
 
-- Full-bleed live-photo hero with the band's hand-drawn logo
-- Upcoming shows calendar with automatic "next show" highlighting
+- The whole site is one living WPA-style park poster: a hand-painted WebGL redwood forest behind every page, with each page a place on the trail (trailhead, campfire circle, old grove, base camp, lookout) at its own time of day
+- No nav bar: a signpost at the trailhead, a fold-out trail map, and a camera that walks between pages
+- Upcoming shows calendar with automatic "next show" highlighting and generative share flyers
 - Latest YouTube video, pulled automatically
-- "Live at G-Fest 2025" full-show stream from the Internet Archive
+- Full live sets streamed from the Internet Archive through a redwood-stump visualizer (the forest behind the page listens too)
+- Electronic press kit with promo video, bios, photos, stage plot and downloads
 - Newsletter with automatic show announcements and week-of reminders (Resend + GitHub Actions)
 - schema.org structured data (MusicGroup + MusicEvent) generated from the shows file
-- Vintage-handbill design system: Fraunces & Alegreya Sans type, deep pine palette, film grain
 
 ## Development
 
@@ -31,7 +32,8 @@ Edit `content/shows.json` (locally or via GitHub's web UI) — Vercel redeploys 
 
 - **Framework**: Next.js 16 (App Router, React 19)
 - **Styling**: Tailwind CSS v4 + custom design system in `app/global.css`
-- **Animation**: Framer Motion
+- **Art**: raw WebGL2 + Canvas2D, painted in code (`lib/world/`), no 3D library
+- **Animation**: CSS and Framer Motion
 - **Deployment**: Vercel (Analytics + Speed Insights)
 
 © Northern Disconnection. All rights reserved.

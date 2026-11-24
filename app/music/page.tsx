@@ -16,21 +16,18 @@ export const metadata: Metadata = {
   },
 }
 
+// The old grove: press play and the forest behind the page listens —
+// fireflies, toadstools and the moon's rings all move with the tape.
 export default function MusicPage() {
   return (
-    <div className="min-h-screen px-4 pb-24 pt-32">
+    <div className="trail-page">
       <div className="mx-auto max-w-4xl">
         <TapeShelf />
 
         <div className="mt-14 text-center">
-          <a
-            href="https://www.youtube.com/channel/UCOpZMRlcndhoCcN1knIHIHA"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="retro-button retro-button--ghost"
-          >
+          <a href="https://www.youtube.com/channel/UCOpZMRlcndhoCcN1knIHIHA" target="_blank" rel="noopener noreferrer" className="retro-button retro-button--ghost">
             <Youtube size={16} />
-            More Live Videos
+            More live videos
           </a>
         </div>
       </div>

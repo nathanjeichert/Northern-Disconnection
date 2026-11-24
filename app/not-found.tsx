@@ -2,17 +2,15 @@ import Link from 'next/link'
 
 export default function NotFound() {
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center px-4 pt-20 text-center">
-      <p className="eyebrow mb-3">404</p>
-      <h1 className="font-display vintage-shadow mb-4 text-5xl text-cream sm:text-6xl">
-        This page wandered off the setlist
-      </h1>
-      <p className="mb-10 text-lg italic text-sand">
-        What a long, strange trip — but there&apos;s nothing here.
-      </p>
-      <Link href="/" className="retro-button">
-        Back Home
-      </Link>
+    <section className="trail-page flex flex-col items-center justify-center text-center">
+      <div className="placard placard--keyline max-w-xl px-8 py-12">
+        <p className="eyebrow">404 · off the trail</p>
+        <h1 className="poster-title mt-2 text-4xl sm:text-5xl">This page wandered off the setlist</h1>
+        <p className="font-serif mb-8 mt-4 text-lg italic">What a long, strange trip — but there&apos;s nothing out here.</p>
+        <Link href="/" className="retro-button">
+          Back to the trailhead
+        </Link>
+      </div>
     </section>
   )
 }
