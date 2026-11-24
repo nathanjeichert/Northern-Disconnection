@@ -95,6 +95,10 @@ interface Item {
   alpha: number
   anim: number
   far: number
+  /** Distance inside which the cut-out has faded away (0 = only when it
+      reaches the lens). Far-off scenery uses this so it is never walked
+      through at the wrong scale. */
+  vanish: number
 }
 
 /** How open the forest is at z: 0 in thick woods, 1 in a clearing, plus the
@@ -178,6 +182,7 @@ function buildScene(tex: Record<TexName, number>, dense: boolean) {
       alpha: 1,
       anim: 0,
       far: 1,
+      vanish: 0,
       ...o,
     }
     it.w0 = it.w
@@ -317,7 +322,7 @@ function buildScene(tex: Record<TexName, number>, dense: boolean) {
     for (let k = 0; k < 14; k++) {
       const w = R(13, 20)
       const side = k % 2 ? 1 : -1
-      add({ kind: SPRITE, z: z0 + R(24, 50), off: side * R(5, 24), w, h: w / 8, ay: 0.03, tex: tex[k % 3 ? 'stand0' : 'stand1'] })
+      add({ kind: SPRITE, z: z0 + R(24, 50), off: side * R(5, 24), w, h: w / 8, ay: 0.03, tex: tex[k % 3 ? 'stand0' : 'stand1'], vanish: 9 })
     }
     for (let k = 0; k < 9; k++) {
       const h = R(4.5, 8.5)
@@ -393,7 +398,7 @@ function buildScene(tex: Record<TexName, number>, dense: boolean) {
     }
     for (let k = 0; k < 12; k++) {
       const w = R(13, 19)
-      add({ kind: SPRITE, z: z3 + R(24, 46), off: (k % 2 ? 1 : -1) * R(6, 24), w, h: w / 8, ay: 0.03, tex: tex[k % 2 ? 'stand0' : 'stand1'] })
+      add({ kind: SPRITE, z: z3 + R(24, 46), off: (k % 2 ? 1 : -1) * R(6, 24), w, h: w / 8, ay: 0.03, tex: tex[k % 2 ? 'stand0' : 'stand1'], vanish: 9 })
     }
     for (let k = 0; k < 9; k++) {
       const h = R(4.5, 8)
@@ -744,6 +749,7 @@ export function createWorld(canvas: HTMLCanvasElement, opts: WorldOptions): Worl
       if (it.anim === ANIM_CRAWL) sx += ((((time * 0.012 + it.phase) % 2.4) + 2.4) % 2.4 - 1.2) / dz
       const fog = Math.pow(smooth(pt.fogStart, fogEnd, dz), 0.85)
       let alpha = it.alpha * (1 - smooth(fogEnd * 0.8, fogEnd, dz)) * smooth(NEAR, NEAR + 0.85, dz)
+      if (it.vanish) alpha *= smooth(it.vanish, it.vanish * 1.7, dz)
       if (alpha < 0.01) continue
 
       if (it.kind === TRUNK) {
